@@ -2,7 +2,9 @@ package com.sctgaming.dungeoncrawl.core.tiles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import com.sctgaming.dungeoncrawl.core.map.Room;
 import com.sctgaming.dungeoncrawl.core.utils.TileTextures;
 
 /**
@@ -21,15 +23,20 @@ public class TileMapGenerator {
 	public static int DUNGEON_WIDTH = 100;
 	public static int DUNGEON_HEIGHT = 100;
 	public static List<List<Tile>> tiles = new ArrayList<List<Tile>>();
+	public static List<Room> rooms = new ArrayList<Room>();
 	public static TileMap currentMap;
+	public static Random rand = new Random();
 	
 	public static List<List<Tile>> generateDungeon(TileMap map) {
 		
 		currentMap = map;
 		populateColumns(DUNGEON_WIDTH, DUNGEON_HEIGHT);
 		
-		addRoom(0,1,1,6,7);
-	    addRoom(1,8,1,4,4);
+		/*
+		 * We know the width and height of the dungeon, so we can place the first room
+		 * near the center.
+		 */
+		addRoom(1, 1, rand.nextInt(MAX_ROOM_WIDTH - MIN_ROOM_WIDTH + 1) + MIN_ROOM_WIDTH, rand.nextInt(MAX_ROOM_HEIGHT - MIN_ROOM_HEIGHT + 1) + MIN_ROOM_HEIGHT);
 		
 		return tiles;
 	}
@@ -50,19 +57,28 @@ public class TileMapGenerator {
 		}
 	}
 	
-	private static boolean addRoom(int room, int startx, int starty, int w, int h) {
+	private static boolean addRoom(int startx, int starty, int w, int h) {
 		
+		/*
+		 * First we check to make sure this room does not intersect with any
+		 * other in-use tiles. If it does, return false and skip room creation.
+		 */
 		for (int x = startx; x < startx + w; x++) {
 			for (int y = starty; y < starty + h; y++) {
-				System.out.println("Room: " + room + " X: " + x + " Y: " + y);
+				System.out.println("X: " + x + " Y: " + y);
 				if (tiles.get(x).get(y) != null && tiles.get(x).get(y).isWall() == false) {
-					System.out.println("Room: " + room + " Collision detected @ X: " + x + " Y: " + y);
+					System.out.println("Collision detected @ X: " + x + " Y: " + y);
 					return false;
 				}
 			}
 		}
 		
+		/*
+		 * Now we create the floor tiles of the room and add the tiles to the main TileMap
+		 */
 		Tile tile;
+		int finalx = 0;
+		int finaly = 0;
 		for (int x = startx; x < startx + w; x++) {
 			for (int y = starty; y < starty + h; y++) {
 				tile = new Tile(currentMap,x,y,false);
@@ -70,20 +86,38 @@ public class TileMapGenerator {
 				tile.setFloor(true);
 				logAction("Creating Floor", "Floor created @ X: " + x + " Y: " + y);
 				tiles.get(x).add(y, tile);
+				finalx = x;
+				finaly = y;
 			}
 		}
 		
+		/*
+		 * Now the walls are created for the room. Walls will skip any occupied blocks.
+		 */
 		for (int x = startx - 1; x < ((startx - 1) + w + 2); x++) {
 			for (int y = starty - 1; y < ((starty - 1) + h + 2); y++) {
 				if (tiles.get(x).get(y) == null) {
 					tile = new Tile(currentMap,x,y,true);
 					tile.setTexture(TileTextures.WALL);
 					tile.setWall(true);
-					logAction("Creating Wall", "Room " + room + " Wall created @ X: " + x + " Y: " + y);
+					logAction("Creating Wall", "Wall created @ X: " + x + " Y: " + y);
 					tiles.get(x).add(y, tile);
 				}
 			}
 		}
+		
+		// TODO: Create entrances randomly on the created room. Should probably happen before walls
+		
+		/*
+		 * If it gets this far, the room creation was a success. Now we create a new Room
+		 * object and pass over the tile data and entrance information, as well as point
+		 * data.
+		 */
+		
+		Room room = new Room();
+		room.setLocation(startx, starty, finalx, finaly);
+		rooms.add(room);
+		logAction("Room Created", "Room sucessfully created. Size of " + w + "x" + h);
 		
 		return true;
 	}

@@ -11,9 +11,11 @@ import com.sctgaming.dungeoncrawl.core.Tickable;
 import com.sctgaming.dungeoncrawl.core.utils.Textures;
 
 public class TileMap implements Tickable {
-	private static final float UNITSCALE = 1 / 16f;
+	public static final float UNITSCALE = 1 / 16f;
 	private static final float TILES_WIDTH = 20;
 	private static final float TILES_HEIGHT = 14.375f;
+	public static int MAP_WIDTH = 100;
+	public static int MAP_HEIGHT = 100;
 	private OrthographicCamera camera;
 	private List<List<Tile>> tiles = new ArrayList<List<Tile>>();
 	

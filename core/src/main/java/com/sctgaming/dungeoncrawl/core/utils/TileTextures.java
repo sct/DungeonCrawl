@@ -2,7 +2,8 @@ package com.sctgaming.dungeoncrawl.core.utils;
 
 public enum TileTextures {
 	FLOOR (0, 0),
-	WALL (1, 0);
+	WALL (1, 0),
+	DOOR (2, 0);
 	
 	private final int x;
 	private final int y;
