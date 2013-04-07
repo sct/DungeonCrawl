@@ -165,16 +165,15 @@ public class TileMapGenerator {
 					if (doorSides.contains(sideCheck)) {
 						doorSpot = startx + rand.nextInt(w);
 						logAction("Door Attempt","Side: Top Offset: " + doorSpot);
-						if (checkDoorPlacement(doorSpot, starty - 1)) {
-							Door door = new Door(currentMap, doorSpot, starty - 1, false);
-							door.setTexture(TileTextures.DOOR);
-							currentMap.addTile(door);
-							room.addDoor(door);
 						
-							// Door added, now we close this side.
-							doorSides.remove(sideCheck);
-							doorsAdded += 1;
-						}
+						Door door = new Door(currentMap, doorSpot, starty - 1, false);
+						door.setTexture(TileTextures.DOOR);
+						currentMap.addTile(door);
+						room.addDoor(door);
+					
+						// Door added, now we close this side.
+						doorSides.remove(sideCheck);
+						doorsAdded += 1;
 					}
 					break;
 				case 1:
@@ -182,15 +181,13 @@ public class TileMapGenerator {
 						doorSpot = starty + rand.nextInt(h);
 						logAction("Door Attempt","Side: Right Offset: " + doorSpot);
 						
-						if (checkDoorPlacement(startx + w, doorSpot)) {
-							Door door = new Door(currentMap, startx + w, doorSpot, false);
-							door.setTexture(TileTextures.DOOR);
-							currentMap.addTile(door);
-							room.addDoor(door);
-							
-							doorSides.remove(sideCheck);
-							doorsAdded += 1;
-						}
+						Door door = new Door(currentMap, startx + w, doorSpot, false);
+						door.setTexture(TileTextures.DOOR);
+						currentMap.addTile(door);
+						room.addDoor(door);
+						
+						doorSides.remove(sideCheck);
+						doorsAdded += 1;
 					}
 					break;
 				case 2:
@@ -198,15 +195,13 @@ public class TileMapGenerator {
 						doorSpot = startx + rand.nextInt(w);
 						logAction("Door Attempt","Side: Bottom Offset: " + doorSpot);
 						
-						if (checkDoorPlacement(doorSpot, starty + h)) {
-							Door door = new Door(currentMap, doorSpot, starty + h, false);
-							door.setTexture(TileTextures.DOOR);
-							currentMap.addTile(door);
-							room.addDoor(door);
-							
-							doorSides.remove(sideCheck);
-							doorsAdded += 1;
-						}
+						Door door = new Door(currentMap, doorSpot, starty + h, false);
+						door.setTexture(TileTextures.DOOR);
+						currentMap.addTile(door);
+						room.addDoor(door);
+						
+						doorSides.remove(sideCheck);
+						doorsAdded += 1;
 					}
 					break;
 				case 3:
@@ -214,15 +209,13 @@ public class TileMapGenerator {
 						doorSpot = starty + rand.nextInt(h);
 						logAction("Door Attempt","Side: Left Offset: " + doorSpot);
 						
-						if (checkDoorPlacement(startx - 1, doorSpot)) {
-							Door door = new Door(currentMap, startx - 1, doorSpot, false);
-							door.setTexture(TileTextures.DOOR);
-							currentMap.addTile(door);
-							room.addDoor(door);
-							
-							doorSides.remove(sideCheck);
-							doorsAdded += 1;
-						}
+						Door door = new Door(currentMap, startx - 1, doorSpot, false);
+						door.setTexture(TileTextures.DOOR);
+						currentMap.addTile(door);
+						room.addDoor(door);
+						
+						doorSides.remove(sideCheck);
+						doorsAdded += 1;
 					}
 					break;
 			}
@@ -233,13 +226,11 @@ public class TileMapGenerator {
 		 */
 		for (int x = startx - 1; x < ((startx - 1) + w + 2); x++) {
 			for (int y = starty - 1; y < ((starty - 1) + h + 2); y++) {
-				if (currentMap.getTile(x, y) == null) {
-					tile = new Tile(currentMap,x,y,true);
-					tile.setTexture(TileTextures.WALL);
-					tile.setWall(true);
-					logAction("Creating Wall", "Wall created @ X: " + x + " Y: " + y);
-					currentMap.addTile(tile);
-				}
+				tile = new Tile(currentMap,x,y,true);
+				tile.setTexture(TileTextures.WALL);
+				tile.setWall(true);
+				logAction("Creating Wall", "Wall created @ X: " + x + " Y: " + y);
+				currentMap.addTile(tile);
 			}
 		}
 		
