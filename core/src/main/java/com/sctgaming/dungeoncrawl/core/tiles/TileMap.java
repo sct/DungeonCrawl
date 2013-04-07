@@ -39,7 +39,10 @@ public class TileMap implements Tickable {
 		
 		for (List<Tile> column : tiles) {
 			for (Tile tile : column) {
-				GameScreen.BATCH.draw(tile.getTexture(), tile.getX(), tile.getY(), 1, 1);
+				if (tile != null)
+				{
+					GameScreen.BATCH.draw(tile.getTexture(), tile.getX(), tile.getY(), 1, 1);
+				}
 			}
 		}
 		

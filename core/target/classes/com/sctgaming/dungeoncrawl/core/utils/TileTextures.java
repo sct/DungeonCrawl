@@ -13,10 +13,10 @@ public enum TileTextures {
 	}
 	
 	public int getX() {
-		return this.x;
+		return this.x  * 16;
 	}
 	
 	public int getY() {
-		return this.y;
+		return this.y * 16;
 	}
 }

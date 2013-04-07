@@ -50,4 +50,12 @@ public class Tile {
 	public boolean isFloor() {
 		return this.floor;
 	}
+	
+	public void setWall(boolean wall) {
+		this.wall = floor;
+	}
+	
+	public boolean isWall() {
+		return this.wall;
+	}
 }
