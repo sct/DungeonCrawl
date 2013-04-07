@@ -11,9 +11,12 @@ public class Room {
 	private List<Door> doors = new ArrayList<Door>();
 	private Point firstPoint = new Point();
 	private Point lastPoint = new Point();
+	private int w;
+	private int h;
 	
-	public Room() {
-		
+	public Room(int w, int h) {
+		this.w = w;
+		this.h = h;
 	}
 	
 	public void setLocation(int fx, int fy, int lx, int ly) {
@@ -33,7 +36,27 @@ public class Room {
 		this.doors = doors;
 	}
 	
+	public void addDoor(Door door) {
+		doors.add(door);
+	}
+	
 	public List<Door> getDoors() {
 		return this.doors;
+	}
+	
+	public int getWidth() {
+		return w;
+	}
+	
+	public int getHeight() {
+		return h;
+	}
+	
+	public Point getMin() {
+		return firstPoint;
+	}
+	
+	public Point getMax() {
+		return lastPoint;
 	}
 }

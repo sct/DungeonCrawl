@@ -1,5 +1,6 @@
 package com.sctgaming.dungeoncrawl.core.tiles;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,8 @@ public class TileMapGenerator {
 	public static int DUNGEON_HEIGHT = 100;
 	public static TileMap currentMap;
 	public static Random rand = new Random();
+	private static List<Point> unscannedTiles = new ArrayList<Point>();
+	private static List<Point> scannedTiles = new ArrayList<Point>();
 	
 	public static TileMap generateDungeon() {
 		
@@ -38,35 +41,73 @@ public class TileMapGenerator {
 		 * We know the width and height of the dungeon, so we can place the first room
 		 * near the center.
 		 */
-		int firstRoomWidth = rand.nextInt(MAX_ROOM_WIDTH - MIN_ROOM_WIDTH + 1) + MIN_ROOM_WIDTH;
-		int firstRoomHeight = rand.nextInt(MAX_ROOM_HEIGHT - MIN_ROOM_HEIGHT + 1) + MIN_ROOM_HEIGHT;
-		addRoom((DUNGEON_WIDTH/2)-(firstRoomWidth/2), (DUNGEON_HEIGHT/2)-(firstRoomHeight/2), firstRoomWidth, firstRoomHeight);
+		addRoom(DUNGEON_WIDTH/2, DUNGEON_HEIGHT/2);
+		
+		// TODO: Add thing sto add more rooms on top of first
+		
+		createOtherRooms();
 		
 		return currentMap;
 	}
 	
-	private static boolean addRoom(int startx, int starty, int w, int h) {
+	private static void createOtherRooms() {
+		prepopulatePoints();
+		
+		Point randPoint;
+		while (!unscannedTiles.isEmpty()) {
+			randPoint = unscannedTiles.get(rand.nextInt(unscannedTiles.size()));
+			
+			Tile tile = currentMap.getTile(randPoint.x, randPoint.y);
+			if (tile == null) {
+				if (!addRoom(randPoint.x, randPoint.y)) {
+					logAction("Room Creation", "Failed to fit room @ X: " + randPoint.x + " Y: " + randPoint.y);
+				}
+			}
+			unscannedTiles.remove(randPoint);
+			scannedTiles.add(randPoint);
+		}
+	}
+	
+	private static void prepopulatePoints() {
+		for (int x = 0; x < DUNGEON_WIDTH; x++) {
+			for (int y = 0; y < DUNGEON_HEIGHT; y++) {
+				unscannedTiles.add(new Point(x,y));
+			}
+		}
+	}
+	
+	private static boolean addRoom(int startx, int starty) {
+		
+		int w = rand.nextInt(MAX_ROOM_WIDTH - MIN_ROOM_WIDTH + 1) + MIN_ROOM_WIDTH;
+		int h = rand.nextInt(MAX_ROOM_HEIGHT - MIN_ROOM_HEIGHT + 1) + MIN_ROOM_HEIGHT;
 		
 		/*
 		 * First we check to make sure this room does not intersect with any
 		 * other in-use tiles. If it does, return false and skip room creation.
 		 */
-		for (int x = startx; x < startx + w; x++) {
-			for (int y = starty; y < starty + h; y++) {
-				System.out.println("X: " + x + " Y: " + y);
-				if (currentMap.getTile(x, y) != null && currentMap.getTile(x, y).isWall() == false) {
-					System.out.println("Collision detected @ X: " + x + " Y: " + y);
+		/*for (int x = startx - 1; x < ((startx - 1) + w + 2); x++) {
+			for (int y = starty - 1; y < ((starty - 1) + h + 2); y++) {
+				if (x >= DUNGEON_WIDTH || x < 0 ||
+					y >= DUNGEON_HEIGHT || y < 0 ||
+					(currentMap.getTile(x, y) != null && currentMap.getTile(x, y).isWall() == false)) {
+					logAction("Room Creation","Collision detected @ X: " + x + " Y: " + y);
 					return false;
 				}
 			}
+		}*/
+		
+		Room room = new Room(w,h);
+		room.setLocation(startx, starty, startx + w, starty + h);
+		
+		for (Room cRoom : currentMap.getRooms()) {
+			if (checkRoomCollision(room, cRoom))
+				return false;
 		}
 		
 		/*
 		 * Now we create the floor tiles of the room and add the tiles to the main TileMap
 		 */
 		Tile tile;
-		int finalx = 0;
-		int finaly = 0;
 		for (int x = startx; x < startx + w; x++) {
 			for (int y = starty; y < starty + h; y++) {
 				tile = new Tile(currentMap,x,y,false);
@@ -74,8 +115,6 @@ public class TileMapGenerator {
 				tile.setFloor(true);
 				logAction("Creating Floor", "Floor created @ X: " + x + " Y: " + y);
 				currentMap.addTile(tile);
-				finalx = x;
-				finaly = y;
 			}
 		}
 		
@@ -108,6 +147,8 @@ public class TileMapGenerator {
 		Set<Integer> doorSides = new HashSet<Integer>();
 		doorSides.add(0);
 		doorSides.add(1);
+		doorSides.add(2);
+		doorSides.add(3);
 		
 		boolean doorsComplete = false;
 		int doorsAdded = 0;
@@ -117,21 +158,23 @@ public class TileMapGenerator {
 				logAction("Doors Created","Door creation process completed");
 			}
 			
-			int sideCheck = rand.nextInt(2);
+			int sideCheck = rand.nextInt(4);
 			int doorSpot;
 			switch (sideCheck) {
 				case 0:
 					if (doorSides.contains(sideCheck)) {
 						doorSpot = startx + rand.nextInt(w);
 						logAction("Door Attempt","Side: Top Offset: " + doorSpot);
+						if (checkDoorPlacement(doorSpot, starty - 1)) {
+							Door door = new Door(currentMap, doorSpot, starty - 1, false);
+							door.setTexture(TileTextures.DOOR);
+							currentMap.addTile(door);
+							room.addDoor(door);
 						
-						Door door = new Door(currentMap, doorSpot, starty - 1, false);
-						door.setTexture(TileTextures.DOOR);
-						currentMap.addTile(door);
-						
-						// Door added, now we close this side.
-						doorSides.remove(sideCheck);
-						doorsAdded += 1;
+							// Door added, now we close this side.
+							doorSides.remove(sideCheck);
+							doorsAdded += 1;
+						}
 					}
 					break;
 				case 1:
@@ -139,15 +182,49 @@ public class TileMapGenerator {
 						doorSpot = starty + rand.nextInt(h);
 						logAction("Door Attempt","Side: Right Offset: " + doorSpot);
 						
-						Door door = new Door(currentMap, startx + w, doorSpot, false);
-						door.setTexture(TileTextures.DOOR);
-						currentMap.addTile(door);
-						
-						doorSides.remove(sideCheck);
-						doorsAdded += 1;
+						if (checkDoorPlacement(startx + w, doorSpot)) {
+							Door door = new Door(currentMap, startx + w, doorSpot, false);
+							door.setTexture(TileTextures.DOOR);
+							currentMap.addTile(door);
+							room.addDoor(door);
+							
+							doorSides.remove(sideCheck);
+							doorsAdded += 1;
+						}
 					}
 					break;
-					
+				case 2:
+					if (doorSides.contains(sideCheck)) {
+						doorSpot = startx + rand.nextInt(w);
+						logAction("Door Attempt","Side: Bottom Offset: " + doorSpot);
+						
+						if (checkDoorPlacement(doorSpot, starty + h)) {
+							Door door = new Door(currentMap, doorSpot, starty + h, false);
+							door.setTexture(TileTextures.DOOR);
+							currentMap.addTile(door);
+							room.addDoor(door);
+							
+							doorSides.remove(sideCheck);
+							doorsAdded += 1;
+						}
+					}
+					break;
+				case 3:
+					if (doorSides.contains(sideCheck)) {
+						doorSpot = starty + rand.nextInt(h);
+						logAction("Door Attempt","Side: Left Offset: " + doorSpot);
+						
+						if (checkDoorPlacement(startx - 1, doorSpot)) {
+							Door door = new Door(currentMap, startx - 1, doorSpot, false);
+							door.setTexture(TileTextures.DOOR);
+							currentMap.addTile(door);
+							room.addDoor(door);
+							
+							doorSides.remove(sideCheck);
+							doorsAdded += 1;
+						}
+					}
+					break;
 			}
 		}
 		
@@ -172,10 +249,53 @@ public class TileMapGenerator {
 		 * data.
 		 */
 		
-		Room room = new Room();
-		room.setLocation(startx, starty, finalx, finaly);
 		currentMap.addRoom(room);
 		logAction("Room Created", "Room sucessfully created. Size of " + w + "x" + h);
+		
+		return true;
+	}
+	
+	/**
+	 * Confirm a point is a valid location for door placement. Valid door placement
+	 * requires at least two unobstructed paths available.
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	private static boolean checkDoorPlacement(int x, int y) {
+		int obstructedCount = 0;
+		
+		for (int xs = -1; xs <= 1; xs++) {
+			for (int ys = -1; ys <= 1; ys++) {
+				if (xs != 0 || ys != 0) {
+					logAction("Check Door","Checking door obstructions @ X: " + (x + xs) + " Y: " + (y + ys));
+					int adjx = x + xs;
+					int adjy = y + ys;
+					if (adjx >= 0 && adjy >= 0) {
+						Tile tile = currentMap.getTile(adjx, adjy);
+						if (tile != null && tile.isObstructed()) {
+							obstructedCount += 1;
+						}
+					}
+				}
+			}
+		}
+		
+		logAction("Check Door","Obstructions counted @ " + obstructedCount);
+		if (obstructedCount >= 3) {
+			return false;
+		}
+		return true;
+	}
+	
+	private static boolean checkRoomCollision(Room room1, Room room2) {
+		if (room1.getMax().x + 2 >= DUNGEON_WIDTH || room1.getMin().x - 1 < 0) return true;
+		if (room1.getMax().y + 2 >= DUNGEON_HEIGHT || room1.getMin().y - 1 < 0) return true;
+		if (room1.getMax().x + 2 < room2.getMin().x) return false;
+		if (room1.getMin().x - 2 > room2.getMax().x) return false;
+		if (room1.getMax().y + 2 < room2.getMin().y) return false;
+		if (room1.getMin().y - 2 > room2.getMax().y) return false;
 		
 		return true;
 	}

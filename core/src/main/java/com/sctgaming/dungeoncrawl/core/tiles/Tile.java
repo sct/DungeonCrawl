@@ -58,4 +58,8 @@ public class Tile {
 	public boolean isWall() {
 		return this.wall;
 	}
+	
+	public boolean isObstructed() {
+		return this.obstructed;
+	}
 }
