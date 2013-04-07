@@ -8,7 +8,7 @@ import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 
 public class Room {
 	private List<Tile> tiles = new ArrayList<Tile>();
-	private List<Tile> doors = new ArrayList<Tile>();
+	private List<Door> doors = new ArrayList<Door>();
 	private Point firstPoint = new Point();
 	private Point lastPoint = new Point();
 	
@@ -29,11 +29,11 @@ public class Room {
 		return this.tiles;
 	}
 	
-	public void setDoors(List<Tile> doors) {
+	public void setDoors(List<Door> doors) {
 		this.doors = doors;
 	}
 	
-	public List<Tile> getDoors() {
+	public List<Door> getDoors() {
 		return this.doors;
 	}
 }

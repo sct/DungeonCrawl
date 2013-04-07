@@ -3,30 +3,81 @@ package com.sctgaming.dungeoncrawl.core.tiles;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
-import com.sctgaming.dungeoncrawl.core.utils.Textures;
+import com.sctgaming.dungeoncrawl.core.map.Room;
 
 public class TileMap implements Tickable {
 	public static final float UNITSCALE = 1 / 16f;
+	public static final float ACTUALSCALE = 1 / 32f;
 	private static final float TILES_WIDTH = 20;
 	private static final float TILES_HEIGHT = 14.375f;
-	public static int MAP_WIDTH = 100;
-	public static int MAP_HEIGHT = 100;
+	public int MAP_WIDTH;
+	public int MAP_HEIGHT;
 	private OrthographicCamera camera;
 	private List<List<Tile>> tiles = new ArrayList<List<Tile>>();
+	private List<Room> rooms = new ArrayList<Room>();
 	
-	public TileMap() {
-		tiles = TileMapGenerator.generateDungeon(this);
+	public TileMap(int w, int h) {
+		MAP_WIDTH = w;
+		MAP_HEIGHT = h;
+		populateColumns(w,h);
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(true, TILES_WIDTH, TILES_HEIGHT);
 		
+		/*
+		 * Move the camera to the center of the map
+		 */
+		Vector3 pos = new Vector3();
+		pos.set(MAP_WIDTH/2-camera.viewportWidth/2,MAP_HEIGHT/2-camera.viewportHeight/2,0);
+		camera.translate(pos.x,pos.y);
+		
+		camera.update();
+		
 		GameScreen.CAMERA = camera;
 		GameScreen.BATCH.setProjectionMatrix(camera.combined);
+	}
+	
+	public List<List<Tile>> getTiles() {
+		return tiles;
+	}
+	
+	public Tile getTile(int x, int y) {
+		if (x < MAP_WIDTH && y < MAP_HEIGHT) {
+			return tiles.get(x).get(y);
+		}
+		return null;
+	}
+	
+	public void addTile(Tile tile) {
+		tiles.get(tile.getX()).add(tile.getY(), tile);
+	}
+	
+	public List<Room> getRooms() {
+		return rooms;
+	}
+	
+	public void addRoom(Room room) {
+		rooms.add(room);
+	}
+	
+	/**
+	 * Populates the multi-dimensional List with nulls to prevent
+	 * out of bounds exception errors when checking for tiles
+	 * 
+	 * @param columns Number of columns to pre-populate
+	 * @param rows Number of rows to pre-populate
+	 */
+	private void populateColumns(int columns, int rows) {
+		for (int x=0; x<columns; x++) {
+			this.tiles.add(x, new ArrayList<Tile>(rows));
+			for (int c=0; c < rows; c++) {
+				this.tiles.get(x).add(c,null);
+			}
+		}
 	}
 
 	@Override
@@ -39,11 +90,11 @@ public class TileMap implements Tickable {
 	public void render(float dt) {
 		GameScreen.BATCH.begin();
 		
-		for (List<Tile> column : tiles) {
+		for (List<Tile> column : this.getTiles()) {
 			for (Tile tile : column) {
 				if (tile != null)
 				{
-					GameScreen.BATCH.draw(tile.getTexture(), tile.getX(), tile.getY(), 1, 1);
+					GameScreen.BATCH.draw(tile.getTexture(), tile.getX(), tile.getY() + 1, 1, -1);
 				}
 			}
 		}

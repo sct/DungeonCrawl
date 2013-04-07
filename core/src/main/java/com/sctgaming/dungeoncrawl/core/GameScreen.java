@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
+import com.sctgaming.dungeoncrawl.core.tiles.TileMapGenerator;
 
 public class GameScreen implements Screen, InputProcessor {
 	private TileMap map;
@@ -19,7 +20,7 @@ public class GameScreen implements Screen, InputProcessor {
 	public GameScreen() {
 		Gdx.input.setInputProcessor(this);
 		BATCH = new SpriteBatch();
-		this.setMap(new TileMap());
+		this.setMap(TileMapGenerator.generateDungeon());
 		
 	}
 
@@ -28,6 +29,7 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		CAMERA.update();
+		BATCH.setProjectionMatrix(CAMERA.combined);
 		map.update(delta);
 		map.render(delta);
 	}
@@ -110,20 +112,21 @@ public class GameScreen implements Screen, InputProcessor {
 		float camX = CAMERA.viewportWidth / 2;
 		float camY = CAMERA.viewportHeight / 2;
 
-		float xMov = xDist * TileMap.UNITSCALE;
-		float yMov = yDist * TileMap.UNITSCALE;
+		float xMov = xDist * TileMap.ACTUALSCALE;
+		float yMov = yDist * TileMap.ACTUALSCALE;
 
 		if (xMov + CAMERA.position.x <= camX) {
 			xMov = camX - CAMERA.position.x;
-		} else if (xMov + CAMERA.position.x >= TileMap.MAP_WIDTH - camX) {
-			xMov = TileMap.MAP_WIDTH - camX - CAMERA.position.x;
+		} else if (xMov + CAMERA.position.x >= map.MAP_WIDTH - camX) {
+			xMov = map.MAP_WIDTH - camX - CAMERA.position.x;
 		}
 
 		if (yMov + CAMERA.position.y <= camY) {
 			yMov = camY - CAMERA.position.y;
-		} else if (yMov + CAMERA.position.y >= TileMap.MAP_HEIGHT - camY) {
-			yMov = TileMap.MAP_HEIGHT - camY - CAMERA.position.y;
+		} else if (yMov + CAMERA.position.y >= map.MAP_HEIGHT - camY) {
+			yMov = map.MAP_HEIGHT - camY - CAMERA.position.y;
 		}
+		
 		CAMERA.translate(xMov, yMov, 0);
 		selectX = screenX;
 		selectY = screenY;
