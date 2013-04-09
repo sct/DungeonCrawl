@@ -1,21 +1,21 @@
 package com.sctgaming.dungeoncrawl.core.tiles;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sctgaming.dungeoncrawl.core.utils.Textures;
 import com.sctgaming.dungeoncrawl.core.utils.TileTextures;
 
 public class Tile {
-	private int x;
-	private int y;
+	private final int x;
+	private final int y;
+	private final TileMap map;
 	private boolean obstructed = false;
 	private TextureRegion texture;
-	private TileMap map;
-	private boolean floor = false;
-	private boolean door = false;
-	private boolean cooridor = false;
-	private boolean wall = false;
 	
 	public Tile(TileMap map, int x, int y, boolean obstructed) {
+		this.map = map;
 		this.x = x;
 		this.y = y;
 		this.obstructed = obstructed;
@@ -43,23 +43,40 @@ public class Tile {
 		this.texture = newText;
 	}
 	
-	public void setFloor(boolean floor) {
-		this.floor = floor;
+	public boolean isVoid() {
+		return false;
 	}
 	
 	public boolean isFloor() {
-		return this.floor;
-	}
-	
-	public void setWall(boolean wall) {
-		this.wall = floor;
+		return false;
 	}
 	
 	public boolean isWall() {
-		return this.wall;
+		return false;
+	}
+	
+	public boolean isDoor() {
+		return false;
 	}
 	
 	public boolean isObstructed() {
 		return this.obstructed;
+	}
+	
+	public Tile getRelative(int x, int y) {
+		System.out.println("Adjacent Test - X: " + (getX() + x) + "Y: " + (getY() + y));
+		Tile tile = map.getTile(getX() + x, getY() + y);
+		return tile;
+	}
+	
+	public List<Tile> getAdjacent() {
+		List<Tile> adjacent = new ArrayList<Tile>();
+		
+		adjacent.add(getRelative(1, 0));
+		adjacent.add(getRelative(-1, 0));
+		adjacent.add(getRelative(0,1));
+		adjacent.add(getRelative(0,-1));
+		
+		return adjacent;
 	}
 }

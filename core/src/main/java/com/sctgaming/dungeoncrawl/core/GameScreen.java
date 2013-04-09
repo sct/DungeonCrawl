@@ -21,7 +21,6 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.input.setInputProcessor(this);
 		BATCH = new SpriteBatch();
 		this.setMap(TileMapGenerator.generateDungeon());
-		
 	}
 
 	@Override

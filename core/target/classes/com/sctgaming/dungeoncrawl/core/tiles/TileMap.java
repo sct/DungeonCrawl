@@ -7,7 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
-import com.sctgaming.dungeoncrawl.core.map.Room;
+import com.sctgaming.dungeoncrawl.core.tiles.map.Room;
+import com.sctgaming.dungeoncrawl.core.tiles.map.Void;
 
 public class TileMap implements Tickable {
 	public static final float UNITSCALE = 1 / 16f;
@@ -53,7 +54,7 @@ public class TileMap implements Tickable {
 	}
 	
 	public void addTile(Tile tile) {
-		tiles.get(tile.getX()).add(tile.getY(), tile);
+		tiles.get(tile.getX()).set(tile.getY(), tile);
 	}
 	
 	public List<Room> getRooms() {
@@ -73,9 +74,9 @@ public class TileMap implements Tickable {
 	 */
 	private void populateColumns(int columns, int rows) {
 		for (int x=0; x<columns; x++) {
-			this.tiles.add(x, new ArrayList<Tile>(rows));
-			for (int c=0; c < rows; c++) {
-				this.tiles.get(x).add(c,null);
+			tiles.add(x, new ArrayList<Tile>(rows));
+			for (int y=0; y < rows; y++) {
+				tiles.get(x).add(y, new Void(this, x, y));
 			}
 		}
 	}

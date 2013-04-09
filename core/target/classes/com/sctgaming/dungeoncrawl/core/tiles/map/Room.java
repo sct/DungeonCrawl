@@ -1,4 +1,4 @@
-package com.sctgaming.dungeoncrawl.core.map;
+package com.sctgaming.dungeoncrawl.core.tiles.map;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -9,6 +9,7 @@ import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 public class Room {
 	private List<Tile> tiles = new ArrayList<Tile>();
 	private List<Door> doors = new ArrayList<Door>();
+	private List<Wall> walls = new ArrayList<Wall>();
 	private Point firstPoint = new Point();
 	private Point lastPoint = new Point();
 	private int w;
@@ -38,6 +39,14 @@ public class Room {
 	
 	public void addDoor(Door door) {
 		doors.add(door);
+	}
+	
+	public void addWall(Wall wall) {
+		walls.add(wall);
+	}
+	
+	public List<Wall> getWalls() {
+		return walls;
 	}
 	
 	public List<Door> getDoors() {

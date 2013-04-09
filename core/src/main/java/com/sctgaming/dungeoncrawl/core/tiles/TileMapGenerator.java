@@ -9,8 +9,10 @@ import java.util.Set;
 
 import com.badlogic.gdx.math.Vector3;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
-import com.sctgaming.dungeoncrawl.core.map.Door;
-import com.sctgaming.dungeoncrawl.core.map.Room;
+import com.sctgaming.dungeoncrawl.core.tiles.map.Door;
+import com.sctgaming.dungeoncrawl.core.tiles.map.Floor;
+import com.sctgaming.dungeoncrawl.core.tiles.map.Room;
+import com.sctgaming.dungeoncrawl.core.tiles.map.Wall;
 import com.sctgaming.dungeoncrawl.core.utils.TileTextures;
 
 /**
@@ -47,7 +49,22 @@ public class TileMapGenerator {
 		
 		createOtherRooms();
 		
+		doorPathTest();
+		
 		return currentMap;
+	}
+	
+	private static void doorPathTest() {
+		for (Room room : currentMap.getRooms()) {
+			for (Door door : room.getDoors()) {
+				for (Tile tile : door.getAdjacent()) {
+					if (tile.isVoid()) {
+						Floor floor = new Floor(currentMap, tile.getX(), tile.getY());
+						currentMap.addTile(floor);
+					}
+				}
+			}
+		}
 	}
 	
 	private static void createOtherRooms() {
@@ -58,7 +75,7 @@ public class TileMapGenerator {
 			randPoint = unscannedTiles.get(rand.nextInt(unscannedTiles.size()));
 			
 			Tile tile = currentMap.getTile(randPoint.x, randPoint.y);
-			if (tile == null) {
+			if (tile.isVoid()) {
 				if (!addRoom(randPoint.x, randPoint.y)) {
 					logAction("Room Creation", "Failed to fit room @ X: " + randPoint.x + " Y: " + randPoint.y);
 				}
@@ -107,14 +124,12 @@ public class TileMapGenerator {
 		/*
 		 * Now we create the floor tiles of the room and add the tiles to the main TileMap
 		 */
-		Tile tile;
+		Floor floor;
 		for (int x = startx; x < startx + w; x++) {
 			for (int y = starty; y < starty + h; y++) {
-				tile = new Tile(currentMap,x,y,false);
-				tile.setTexture(TileTextures.FLOOR);
-				tile.setFloor(true);
+				floor = new Floor(currentMap,x,y);
 				logAction("Creating Floor", "Floor created @ X: " + x + " Y: " + y);
-				currentMap.addTile(tile);
+				currentMap.addTile(floor);
 			}
 		}
 		
@@ -165,15 +180,15 @@ public class TileMapGenerator {
 					if (doorSides.contains(sideCheck)) {
 						doorSpot = startx + rand.nextInt(w);
 						logAction("Door Attempt","Side: Top Offset: " + doorSpot);
+						if (starty - 1 != 0) {
+							Door door = new Door(currentMap, doorSpot, starty - 1, false);
+							currentMap.addTile(door);
+							room.addDoor(door);
 						
-						Door door = new Door(currentMap, doorSpot, starty - 1, false);
-						door.setTexture(TileTextures.DOOR);
-						currentMap.addTile(door);
-						room.addDoor(door);
-					
-						// Door added, now we close this side.
+							// Door added, now we close this side.
+							doorsAdded += 1;
+						}
 						doorSides.remove(sideCheck);
-						doorsAdded += 1;
 					}
 					break;
 				case 1:
@@ -181,13 +196,14 @@ public class TileMapGenerator {
 						doorSpot = starty + rand.nextInt(h);
 						logAction("Door Attempt","Side: Right Offset: " + doorSpot);
 						
-						Door door = new Door(currentMap, startx + w, doorSpot, false);
-						door.setTexture(TileTextures.DOOR);
-						currentMap.addTile(door);
-						room.addDoor(door);
-						
+						if (startx + w != DUNGEON_WIDTH) {
+							Door door = new Door(currentMap, startx + w, doorSpot, false);
+							currentMap.addTile(door);
+							room.addDoor(door);
+							
+							doorsAdded += 1;
+						}
 						doorSides.remove(sideCheck);
-						doorsAdded += 1;
 					}
 					break;
 				case 2:
@@ -195,27 +211,28 @@ public class TileMapGenerator {
 						doorSpot = startx + rand.nextInt(w);
 						logAction("Door Attempt","Side: Bottom Offset: " + doorSpot);
 						
-						Door door = new Door(currentMap, doorSpot, starty + h, false);
-						door.setTexture(TileTextures.DOOR);
-						currentMap.addTile(door);
-						room.addDoor(door);
-						
+						if (starty + h == DUNGEON_HEIGHT) {
+							Door door = new Door(currentMap, doorSpot, starty + h, false);
+							currentMap.addTile(door);
+							room.addDoor(door);
+							
+							doorsAdded += 1;
+						}
 						doorSides.remove(sideCheck);
-						doorsAdded += 1;
 					}
 					break;
 				case 3:
 					if (doorSides.contains(sideCheck)) {
 						doorSpot = starty + rand.nextInt(h);
 						logAction("Door Attempt","Side: Left Offset: " + doorSpot);
-						
-						Door door = new Door(currentMap, startx - 1, doorSpot, false);
-						door.setTexture(TileTextures.DOOR);
-						currentMap.addTile(door);
-						room.addDoor(door);
-						
+						if (startx - 1 != 0) {
+							Door door = new Door(currentMap, startx - 1, doorSpot, false);
+							currentMap.addTile(door);
+							room.addDoor(door);
+							
+							doorsAdded += 1;
+						}
 						doorSides.remove(sideCheck);
-						doorsAdded += 1;
 					}
 					break;
 			}
@@ -226,11 +243,13 @@ public class TileMapGenerator {
 		 */
 		for (int x = startx - 1; x < ((startx - 1) + w + 2); x++) {
 			for (int y = starty - 1; y < ((starty - 1) + h + 2); y++) {
-				tile = new Tile(currentMap,x,y,true);
-				tile.setTexture(TileTextures.WALL);
-				tile.setWall(true);
-				logAction("Creating Wall", "Wall created @ X: " + x + " Y: " + y);
-				currentMap.addTile(tile);
+				if (currentMap.getTile(x, y).isVoid()) {
+					Wall  wall = new Wall(currentMap,x,y);
+					logAction("Creating Wall", "Wall created @ X: " + x + " Y: " + y);
+					currentMap.addTile(wall);
+					room.addWall(wall);
+				}
+					
 			}
 		}
 		
