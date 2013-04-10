@@ -1,13 +1,20 @@
 package com.sctgaming.dungeoncrawl.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.sctgaming.dungeoncrawl.core.entity.Entity;
 import com.sctgaming.dungeoncrawl.core.entity.Player;
+import com.sctgaming.dungeoncrawl.core.entity.monster.Goblin;
+import com.sctgaming.dungeoncrawl.core.entity.monster.Wraith;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMapGenerator;
 import com.sctgaming.dungeoncrawl.core.utils.Directions;
@@ -16,7 +23,11 @@ public class GameScreen implements Screen, InputProcessor {
 	private TileMap map;
 	private Player player;
 	public static OrthographicCamera CAMERA;
+	public static OrthographicCamera ICAMERA;
 	public static SpriteBatch BATCH;
+	public static SpriteBatch INTERFACE;
+	public static BitmapFont font = new BitmapFont(true);
+	public static List<Entity> entities = new ArrayList<Entity>();
 	
 	private int selectX = 0;
 	private int selectY = 0;
@@ -24,22 +35,39 @@ public class GameScreen implements Screen, InputProcessor {
 	public GameScreen() {
 		Gdx.input.setInputProcessor(this);
 		BATCH = new SpriteBatch();
+		INTERFACE = new SpriteBatch();
+		ICAMERA = new OrthographicCamera();
+		ICAMERA.setToOrtho(true);
 		this.setMap(TileMapGenerator.generateDungeon());
 		this.setPlayer(new Player(map,50,50));
+		Wraith wraith = new Wraith(map,51,51);
+		Goblin goblin = new Goblin(map,52,52);
+		entities.add(wraith);
+		entities.add(goblin);
 	}
 
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		CAMERA.update();
+		
 		BATCH.setProjectionMatrix(CAMERA.combined);
+		INTERFACE.setProjectionMatrix(ICAMERA.combined);
 		BATCH.begin();
 		map.update(delta);
 		player.update(delta);
 		map.render(delta);
 		player.render(delta);
+		
+		for (Entity entity : entities) {
+			entity.update(delta);
+			entity.render(delta);
+		}
 		BATCH.end();
+		
+		INTERFACE.begin();
+		font.draw(INTERFACE, "Dungeon Crawler v0.1", 10, 10);
+		INTERFACE.end();
 	}
 
 	@Override
@@ -104,6 +132,9 @@ public class GameScreen implements Screen, InputProcessor {
 			case Keys.LEFT:
 				player.setDirection(Directions.WEST);
 				player.setMoving(true);
+				break;
+			case Keys.SPACE:
+				player.action();
 				break;
 		}
 		

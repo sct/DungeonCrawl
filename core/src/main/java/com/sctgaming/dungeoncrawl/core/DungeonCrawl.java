@@ -7,7 +7,7 @@ public class DungeonCrawl extends Game {
 	
 	@Override
 	public void create() {
-		Gdx.graphics.setVSync(true);
+		Gdx.graphics.setVSync(false);
 		setScreen(new GameScreen());
 	}
 }

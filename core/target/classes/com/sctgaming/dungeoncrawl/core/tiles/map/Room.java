@@ -31,6 +31,10 @@ public class Room {
 		this.tiles = tiles;
 	}
 	
+	public void addTile(Tile tile) {
+		tiles.add(tile);
+	}
+	
 	public List<Tile> getTiles() {
 		return this.tiles;
 	}

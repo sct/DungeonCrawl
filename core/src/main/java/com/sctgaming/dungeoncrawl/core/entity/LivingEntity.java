@@ -1,5 +1,6 @@
 package com.sctgaming.dungeoncrawl.core.entity;
 
+import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
 
 public class LivingEntity extends Entity {
@@ -12,7 +13,8 @@ public class LivingEntity extends Entity {
 	
 	@Override
 	public boolean setRelativePosition(int x, int y) {
-		if (map.getTile(getX() + x, getY() + y).isObstructed()) {
+		Tile tile = map.getTile(getX() + x, getY() + y);
+		if (tile == null || tile.isObstructed() || tile.getEntity() != null) {
 			return false;
 		}
 		return super.setRelativePosition(x, y);

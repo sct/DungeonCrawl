@@ -1,23 +1,30 @@
 package com.sctgaming.dungeoncrawl.core.entity;
 
 import com.sctgaming.dungeoncrawl.core.GameScreen;
+import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
-import com.sctgaming.dungeoncrawl.core.utils.Directions;
 import com.sctgaming.dungeoncrawl.core.utils.PlayerTextures;
+import com.sctgaming.dungeoncrawl.core.utils.Textures;
 
 public class Player extends LivingEntity {
-	public boolean isMoving = false;
-	public Directions direction = Directions.EAST;
 
 	public Player(TileMap map, int x, int y) {
 		super(map, x, y);
-		this.setTexture(PlayerTextures.WIZARD);
+		this.setTexture(Textures.PLAYER,PlayerTextures.WIZARD.getX(),PlayerTextures.WIZARD.getY());
+	}
+	
+	@Override
+	public void setPosition(int x, int y) {
+		GameScreen.CAMERA.translate(x - getX(),y - getY());
+		GameScreen.CAMERA.update();
+		super.setPosition(x, y);
+		
 	}
 	
 	@Override
 	public boolean setRelativePosition(int x, int y) {
 		if (super.setRelativePosition(x, y)) {
-			GameScreen.CAMERA.translate(x,y);
+			
 			return true;
 		}
 		return false;
@@ -28,21 +35,24 @@ public class Player extends LivingEntity {
 	}
 	
 	public void setMoving(boolean isMoving) {
-		move(getDirection());
-		resetTime();
+		if (isMoving) {
+			move(getDirection());
+			resetTime();
+		}
 		this.isMoving = isMoving;
 	}
 	
-	public Directions getDirection() {
-		return direction;
-	}
-	
-	public void setDirection(Directions direction) {
-		this.direction = direction;
+	public void action() {
+		for (Tile adjacent : getTile().getAdjacent()) {
+			if (adjacent.isUsable()) {
+				adjacent.use();
+			}
+		}
 	}
 	
 	@Override
 	public void run(float time) {
+		animate();
 		if (isMoving()) {
 			move(direction);
 		}

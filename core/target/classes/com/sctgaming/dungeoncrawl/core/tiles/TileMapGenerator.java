@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Corridor;
@@ -142,6 +143,30 @@ public class TileMapGenerator {
 				}
 			}
 		}
+		
+		List<Tile> newWalls = new ArrayList<Tile>();
+		for (List<Tile> column : currentMap.getTiles()) {
+			for (Tile tile : column) {
+				if (tile.isVoid()) {
+					int walls = 0;
+					for (Tile adjacent : tile.getAdjacent()) {
+						if (adjacent != null && adjacent.isWall()) {
+							walls += 1;
+						}
+					}
+					
+					if (walls > 1) {
+						Wall wall = new Wall(currentMap, tile.getX(), tile.getY());
+						newWalls.add(wall);
+					}
+					
+				}
+			}
+		}
+		
+		for (Tile tile : newWalls) {
+			currentMap.addTile(tile);
+		}
 	}
 	
 	private static void createOtherRooms() {
@@ -179,16 +204,6 @@ public class TileMapGenerator {
 		 * First we check to make sure this room does not intersect with any
 		 * other in-use tiles. If it does, return false and skip room creation.
 		 */
-		/*for (int x = startx - 1; x < ((startx - 1) + w + 2); x++) {
-			for (int y = starty - 1; y < ((starty - 1) + h + 2); y++) {
-				if (x >= DUNGEON_WIDTH || x < 0 ||
-					y >= DUNGEON_HEIGHT || y < 0 ||
-					(currentMap.getTile(x, y) != null && currentMap.getTile(x, y).isWall() == false)) {
-					logAction("Room Creation","Collision detected @ X: " + x + " Y: " + y);
-					return false;
-				}
-			}
-		}*/
 		
 		Room room = new Room(w,h, lastRoom);
 		room.setLocation(startx, starty, startx + w, starty + h);
@@ -207,6 +222,7 @@ public class TileMapGenerator {
 				floor = new Floor(currentMap,x,y);
 				logAction("Creating Floor", "Floor created @ X: " + x + " Y: " + y);
 				currentMap.addTile(floor);
+				room.addTile(floor);
 			}
 		}
 		
@@ -341,6 +357,15 @@ public class TileMapGenerator {
 		 */
 		
 		currentMap.addRoom(room);
+		
+		Color color = new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat(),1);
+		
+		for (Tile tile : room.getTiles()) {
+			if (tile instanceof Floor) {
+				((Floor) tile).setColor(color);
+			}
+		}
+		
 		lastRoom = room;
 		logAction("Room Created", "Room sucessfully created. Size of " + w + "x" + h);
 		
