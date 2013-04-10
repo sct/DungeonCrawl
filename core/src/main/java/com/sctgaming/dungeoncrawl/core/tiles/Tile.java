@@ -13,6 +13,7 @@ public class Tile {
 	private final TileMap map;
 	private boolean obstructed = false;
 	private TextureRegion texture;
+	private int cost = 1;
 	
 	public Tile(TileMap map, int x, int y, boolean obstructed) {
 		this.map = map;
@@ -59,12 +60,23 @@ public class Tile {
 		return false;
 	}
 	
+	public boolean isCorridor() {
+		return false;
+	}
+	
+	public boolean canTunnel() {
+		return false;
+	}
+	
 	public boolean isObstructed() {
 		return this.obstructed;
 	}
 	
+	public int getCost() {
+		return cost;
+	}
+	
 	public Tile getRelative(int x, int y) {
-		System.out.println("Adjacent Test - X: " + (getX() + x) + "Y: " + (getY() + y));
 		Tile tile = map.getTile(getX() + x, getY() + y);
 		return tile;
 	}

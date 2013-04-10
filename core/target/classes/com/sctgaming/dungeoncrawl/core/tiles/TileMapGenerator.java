@@ -2,6 +2,8 @@ package com.sctgaming.dungeoncrawl.core.tiles;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -9,6 +11,7 @@ import java.util.Set;
 
 import com.badlogic.gdx.math.Vector3;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
+import com.sctgaming.dungeoncrawl.core.tiles.map.Corridor;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Door;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Floor;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Room;
@@ -49,18 +52,89 @@ public class TileMapGenerator {
 		
 		createOtherRooms();
 		
-		doorPathTest();
+		createCorridors();
+		addCorridorWalls();
 		
 		return currentMap;
 	}
 	
-	private static void doorPathTest() {
-		for (Room room : currentMap.getRooms()) {
-			for (Door door : room.getDoors()) {
-				for (Tile tile : door.getAdjacent()) {
-					if (tile.isVoid()) {
-						Floor floor = new Floor(currentMap, tile.getX(), tile.getY());
-						currentMap.addTile(floor);
+	private static void createCorridors() {
+		for (Door door : currentMap.getDoors()) {
+			if (!door.isConnected()) {
+				Door closestDoor = null;
+				int closestDistance = 0;
+				for (Door destDoor : currentMap.getDoors()) {
+					int distance = Math.abs(destDoor.getX() - door.getX()) + Math.abs(destDoor.getY() - door.getY());
+					if ((closestDoor == null || distance < closestDistance) && !door.equals(destDoor) && !door.getRoom().equals(destDoor.getRoom())) {
+						closestDoor = destDoor;
+						closestDistance = distance;
+					}
+				}
+				logAction("Pathing","Closest door found! Distance: " + closestDistance);
+				createCorridor(door, closestDoor);
+				door.setConnected(true);
+				closestDoor.setConnected(true);
+			}
+		}
+	}
+	
+	private static boolean createCorridor(Tile start, Tile dest) {
+		HashMap<Tile,PathNode> open = new HashMap<Tile,PathNode>();
+		HashSet<Tile> closed = new HashSet<Tile>();
+		PathNode curNode = null;
+		
+		open.put(start, new PathNode(null, start, dest));
+		
+		logAction("Pathing","Trying to carve tunnel from door @ " + start.getX() + "," + start.getY() + " to " + dest.getX() + "," + dest.getY());
+		while (!open.containsKey(dest)) {
+			curNode = null;
+			
+			if (open.isEmpty()) {
+				logAction("Pathing","No path found");
+				return false;
+			}
+			
+			for (PathNode node : open.values()) {
+				if (curNode == null || node.getTotal() < curNode.getTotal()) {
+					curNode = node;
+				}
+			}
+			
+			closed.add(curNode.getTile());
+			open.remove(curNode.getTile());
+			
+			for (Tile tile : curNode.getTile().getAdjacent()) {
+				if (tile != null && !closed.contains(tile) && tile.canTunnel()) {
+					if (!open.containsKey(tile) || (curNode.getCost() + tile.getCost()) < open.get(tile).getCost()) {
+						PathNode newNode = new PathNode(curNode, tile, dest);
+						open.put(tile, newNode);
+					}
+				}
+			}
+		}
+		
+		logAction("Pathing", "Path found, setting tiles...");
+		while (curNode.getParent() != null) {
+			if (curNode.getTile().canTunnel() && !curNode.getTile().isDoor()) {
+				Corridor corridor = new Corridor(currentMap,curNode.getTile().getX(), curNode.getTile().getY());
+				currentMap.addTile(corridor);
+			}
+			curNode = curNode.getParent();
+		}
+		
+		logAction("Pathing", "Path created");
+		return true;
+	}
+	
+	private static void addCorridorWalls() {
+		for (List<Tile> column : currentMap.getTiles()) {
+			for (Tile tile : column) {
+				if (tile.isCorridor()) {
+					for (Tile adjacent : tile.getAdjacent()) {
+						if (adjacent != null && adjacent.isVoid()) {
+							Wall wall = new Wall(currentMap, adjacent.getX(), adjacent.getY());
+							currentMap.addTile(wall);
+						}
 					}
 				}
 			}
@@ -181,8 +255,9 @@ public class TileMapGenerator {
 						doorSpot = startx + rand.nextInt(w);
 						logAction("Door Attempt","Side: Top Offset: " + doorSpot);
 						if (starty - 1 != 0) {
-							Door door = new Door(currentMap, doorSpot, starty - 1, false);
+							Door door = new Door(currentMap, doorSpot, starty - 1, room);
 							currentMap.addTile(door);
+							currentMap.addDoor(door);
 							room.addDoor(door);
 						
 							// Door added, now we close this side.
@@ -197,8 +272,9 @@ public class TileMapGenerator {
 						logAction("Door Attempt","Side: Right Offset: " + doorSpot);
 						
 						if (startx + w != DUNGEON_WIDTH) {
-							Door door = new Door(currentMap, startx + w, doorSpot, false);
+							Door door = new Door(currentMap, startx + w, doorSpot, room);
 							currentMap.addTile(door);
+							currentMap.addDoor(door);
 							room.addDoor(door);
 							
 							doorsAdded += 1;
@@ -212,8 +288,9 @@ public class TileMapGenerator {
 						logAction("Door Attempt","Side: Bottom Offset: " + doorSpot);
 						
 						if (starty + h == DUNGEON_HEIGHT) {
-							Door door = new Door(currentMap, doorSpot, starty + h, false);
+							Door door = new Door(currentMap, doorSpot, starty + h, room);
 							currentMap.addTile(door);
+							currentMap.addDoor(door);
 							room.addDoor(door);
 							
 							doorsAdded += 1;
@@ -226,8 +303,9 @@ public class TileMapGenerator {
 						doorSpot = starty + rand.nextInt(h);
 						logAction("Door Attempt","Side: Left Offset: " + doorSpot);
 						if (startx - 1 != 0) {
-							Door door = new Door(currentMap, startx - 1, doorSpot, false);
+							Door door = new Door(currentMap, startx - 1, doorSpot, room);
 							currentMap.addTile(door);
+							currentMap.addDoor(door);
 							room.addDoor(door);
 							
 							doorsAdded += 1;

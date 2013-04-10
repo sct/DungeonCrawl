@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
+import com.sctgaming.dungeoncrawl.core.tiles.map.Door;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Room;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Void;
 
@@ -20,6 +21,7 @@ public class TileMap implements Tickable {
 	private OrthographicCamera camera;
 	private List<List<Tile>> tiles = new ArrayList<List<Tile>>();
 	private List<Room> rooms = new ArrayList<Room>();
+	private List<Door> doors = new ArrayList<Door>();
 	
 	public TileMap(int w, int h) {
 		MAP_WIDTH = w;
@@ -47,7 +49,7 @@ public class TileMap implements Tickable {
 	}
 	
 	public Tile getTile(int x, int y) {
-		if (x < MAP_WIDTH && y < MAP_HEIGHT) {
+		if (x < MAP_WIDTH && y < MAP_HEIGHT && x >= 0 && y >= 0) {
 			return tiles.get(x).get(y);
 		}
 		return null;
@@ -55,6 +57,14 @@ public class TileMap implements Tickable {
 	
 	public void addTile(Tile tile) {
 		tiles.get(tile.getX()).set(tile.getY(), tile);
+	}
+
+	public List<Door> getDoors() {
+		return doors;
+	}
+	
+	public void addDoor(Door door) {
+		doors.add(door);
 	}
 	
 	public List<Room> getRooms() {
