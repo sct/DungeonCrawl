@@ -3,14 +3,18 @@ package com.sctgaming.dungeoncrawl.core;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.sctgaming.dungeoncrawl.core.entity.Player;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMapGenerator;
+import com.sctgaming.dungeoncrawl.core.utils.Directions;
 
 public class GameScreen implements Screen, InputProcessor {
 	private TileMap map;
+	private Player player;
 	public static OrthographicCamera CAMERA;
 	public static SpriteBatch BATCH;
 	
@@ -21,6 +25,7 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.input.setInputProcessor(this);
 		BATCH = new SpriteBatch();
 		this.setMap(TileMapGenerator.generateDungeon());
+		this.setPlayer(new Player(map,50,50));
 	}
 
 	@Override
@@ -31,6 +36,8 @@ public class GameScreen implements Screen, InputProcessor {
 		BATCH.setProjectionMatrix(CAMERA.combined);
 		map.update(delta);
 		map.render(delta);
+		player.update(delta);
+		player.render(delta);
 	}
 
 	@Override
@@ -72,16 +79,38 @@ public class GameScreen implements Screen, InputProcessor {
 	private void setMap(TileMap map) {
 		this.map = map;
 	}
+	
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
+		switch (keycode) {
+			case Keys.UP:
+				player.setDirection(Directions.NORTH);
+				player.setMoving(true);
+				break;
+			case Keys.RIGHT:
+				player.setDirection(Directions.EAST);
+				player.setMoving(true);
+				break;
+			case Keys.DOWN:
+				player.setDirection(Directions.SOUTH);
+				player.setMoving(true);
+				break;
+			case Keys.LEFT:
+				player.setDirection(Directions.WEST);
+				player.setMoving(true);
+				break;
+		}
+		
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
+		player.setMoving(false);
 		return false;
 	}
 

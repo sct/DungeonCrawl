@@ -6,7 +6,7 @@ public enum TileTextures {
 	FLOOR (1, 0),
 	RED_FLOOR (1, 1),
 	CAVE_FLOOR (1, 2),
-	WALL (2, 0),
+	WALL (2, 1),
 	CAVE (2, 1),
 	DOOR (3, 0);
 	
