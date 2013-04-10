@@ -34,6 +34,7 @@ public class TileMapGenerator {
 	public static int DUNGEON_WIDTH = 100;
 	public static int DUNGEON_HEIGHT = 100;
 	public static TileMap currentMap;
+	public static Room lastRoom = null;
 	public static Random rand = new Random();
 	private static List<Point> unscannedTiles = new ArrayList<Point>();
 	private static List<Point> scannedTiles = new ArrayList<Point>();
@@ -48,7 +49,6 @@ public class TileMapGenerator {
 		 */
 		addRoom(DUNGEON_WIDTH/2, DUNGEON_HEIGHT/2);
 		
-		// TODO: Add thing sto add more rooms on top of first
 		
 		createOtherRooms();
 		
@@ -59,23 +59,26 @@ public class TileMapGenerator {
 	}
 	
 	private static void createCorridors() {
-		for (Door door : currentMap.getDoors()) {
-			if (!door.isConnected()) {
-				Door closestDoor = null;
-				int closestDistance = 0;
-				for (Door destDoor : currentMap.getDoors()) {
-					int distance = Math.abs(destDoor.getX() - door.getX()) + Math.abs(destDoor.getY() - door.getY());
-					if ((closestDoor == null || distance < closestDistance) && !door.equals(destDoor) && !door.getRoom().equals(destDoor.getRoom())) {
-						closestDoor = destDoor;
-						closestDistance = distance;
+		for (Room room : currentMap.getRooms()) {
+			for (Door door : room.getDoors()) {
+				if (!door.isConnected() && room.getParent() != null) {
+					Door closestDoor = null;
+					int closestDistance = 0;
+					for (Door destDoor : room.getParent().getDoors()) {
+						int distance = Math.abs(destDoor.getX() - door.getX()) + Math.abs(destDoor.getY() - door.getY());
+						if ((closestDoor == null || distance < closestDistance) && !door.equals(destDoor) && !door.getRoom().equals(destDoor.getRoom())) {
+							closestDoor = destDoor;
+							closestDistance = distance;
+						}
 					}
+					logAction("Pathing","Closest door found! Distance: " + closestDistance);
+					createCorridor(door, closestDoor);
+					door.setConnected(true);
+					closestDoor.setConnected(true);
 				}
-				logAction("Pathing","Closest door found! Distance: " + closestDistance);
-				createCorridor(door, closestDoor);
-				door.setConnected(true);
-				closestDoor.setConnected(true);
 			}
 		}
+		
 	}
 	
 	private static boolean createCorridor(Tile start, Tile dest) {
@@ -187,7 +190,7 @@ public class TileMapGenerator {
 			}
 		}*/
 		
-		Room room = new Room(w,h);
+		Room room = new Room(w,h, lastRoom);
 		room.setLocation(startx, starty, startx + w, starty + h);
 		
 		for (Room cRoom : currentMap.getRooms()) {
@@ -338,42 +341,9 @@ public class TileMapGenerator {
 		 */
 		
 		currentMap.addRoom(room);
+		lastRoom = room;
 		logAction("Room Created", "Room sucessfully created. Size of " + w + "x" + h);
 		
-		return true;
-	}
-	
-	/**
-	 * Confirm a point is a valid location for door placement. Valid door placement
-	 * requires at least two unobstructed paths available.
-	 * 
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	private static boolean checkDoorPlacement(int x, int y) {
-		int obstructedCount = 0;
-		
-		for (int xs = -1; xs <= 1; xs++) {
-			for (int ys = -1; ys <= 1; ys++) {
-				if (xs != 0 || ys != 0) {
-					logAction("Check Door","Checking door obstructions @ X: " + (x + xs) + " Y: " + (y + ys));
-					int adjx = x + xs;
-					int adjy = y + ys;
-					if (adjx >= 0 && adjy >= 0) {
-						Tile tile = currentMap.getTile(adjx, adjy);
-						if (tile != null && tile.isObstructed()) {
-							obstructedCount += 1;
-						}
-					}
-				}
-			}
-		}
-		
-		logAction("Check Door","Obstructions counted @ " + obstructedCount);
-		if (obstructedCount >= 3) {
-			return false;
-		}
 		return true;
 	}
 	

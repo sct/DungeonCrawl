@@ -7,6 +7,7 @@ import java.util.List;
 import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 
 public class Room {
+	private Room parent;
 	private List<Tile> tiles = new ArrayList<Tile>();
 	private List<Door> doors = new ArrayList<Door>();
 	private List<Wall> walls = new ArrayList<Wall>();
@@ -15,9 +16,10 @@ public class Room {
 	private int w;
 	private int h;
 	
-	public Room(int w, int h) {
+	public Room(int w, int h, Room parent) {
 		this.w = w;
 		this.h = h;
+		this.parent = parent;
 	}
 	
 	public void setLocation(int fx, int fy, int lx, int ly) {
@@ -67,5 +69,13 @@ public class Room {
 	
 	public Point getMax() {
 		return lastPoint;
+	}
+	
+	public Room getParent() {
+		return parent;
+	}
+	
+	public void setParent(Room parent) {
+		this.parent = parent;
 	}
 }

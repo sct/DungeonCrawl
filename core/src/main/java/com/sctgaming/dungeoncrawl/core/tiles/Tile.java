@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sctgaming.dungeoncrawl.core.utils.Textures;
 import com.sctgaming.dungeoncrawl.core.utils.TileTextures;
 
-public class Tile {
+public abstract class Tile {
 	private final int x;
 	private final int y;
 	private final TileMap map;

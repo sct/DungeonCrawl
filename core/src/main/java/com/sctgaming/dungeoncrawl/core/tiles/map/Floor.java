@@ -8,7 +8,7 @@ public class Floor extends Tile {
 
 	public Floor(TileMap map, int x, int y) {
 		super(map, x, y, false);
-		this.setTexture(TileTextures.FLOOR);
+		this.setTexture(TileTextures.RED_FLOOR);
 	}
 	
 	@Override
