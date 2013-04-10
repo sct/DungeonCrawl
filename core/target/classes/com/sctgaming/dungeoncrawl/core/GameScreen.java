@@ -34,10 +34,12 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		CAMERA.update();
 		BATCH.setProjectionMatrix(CAMERA.combined);
+		BATCH.begin();
 		map.update(delta);
-		map.render(delta);
 		player.update(delta);
+		map.render(delta);
 		player.render(delta);
+		BATCH.end();
 	}
 
 	@Override
@@ -110,7 +112,23 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		player.setMoving(false);
+		if (player.isMoving()) {
+			if (player.getDirection().equals(Directions.NORTH) && keycode == Keys.UP) {
+				player.setMoving(false);
+			}
+			
+			if (player.getDirection().equals(Directions.EAST) && keycode == Keys.RIGHT) {
+				player.setMoving(false);
+			}
+			
+			if (player.getDirection().equals(Directions.SOUTH) && keycode == Keys.DOWN) {
+				player.setMoving(false);
+			}
+			
+			if (player.getDirection().equals(Directions.WEST) && keycode == Keys.LEFT) {
+				player.setMoving(false);
+			}
+		}
 		return false;
 	}
 

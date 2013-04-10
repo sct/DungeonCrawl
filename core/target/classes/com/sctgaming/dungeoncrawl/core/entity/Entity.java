@@ -37,6 +37,10 @@ public abstract class Entity implements Tickable {
 		this.y = y;
 	}
 	
+	public void resetTime() {
+		this.time = 0;
+	}
+	
 	public boolean setRelativePosition(int x, int y) {
 		this.x += x;
 		this.y += y;
@@ -62,7 +66,7 @@ public abstract class Entity implements Tickable {
 	@Override
 	public void update(float dt) {
 		time += dt;
-		if (time > 0.20F) {
+		if (time > 0.3F) {
 			this.run(time);
 			time = 0;
 		}
@@ -70,11 +74,9 @@ public abstract class Entity implements Tickable {
 
 	@Override
 	public void render(float dt) {
-		GameScreen.BATCH.begin();
 		if (texture != null) {
 			GameScreen.BATCH.draw(texture, this.getX(), this.getY() + 1, 1, -1);
 		}
-		GameScreen.BATCH.end();
 	}
 
 	@Override

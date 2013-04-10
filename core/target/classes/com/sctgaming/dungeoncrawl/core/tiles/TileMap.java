@@ -99,8 +99,6 @@ public class TileMap implements Tickable {
 
 	@Override
 	public void render(float dt) {
-		GameScreen.BATCH.begin();
-		
 		for (List<Tile> column : this.getTiles()) {
 			for (Tile tile : column) {
 				if (tile != null)
@@ -109,8 +107,6 @@ public class TileMap implements Tickable {
 				}
 			}
 		}
-		
-		GameScreen.BATCH.end();
 	}
 
 	@Override

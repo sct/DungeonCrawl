@@ -28,6 +28,8 @@ public class Player extends LivingEntity {
 	}
 	
 	public void setMoving(boolean isMoving) {
+		move(getDirection());
+		resetTime();
 		this.isMoving = isMoving;
 	}
 	
