@@ -29,8 +29,7 @@ public class GameScreen implements Screen, InputProcessor {
 	public static BitmapFont font = new BitmapFont(true);
 	public static List<Entity> entities = new ArrayList<Entity>();
 	
-	private int selectX = 0;
-	private int selectY = 0;
+	private static int turn = 0;
 	
 	public GameScreen() {
 		Gdx.input.setInputProcessor(this);
@@ -41,7 +40,7 @@ public class GameScreen implements Screen, InputProcessor {
 		this.setMap(TileMapGenerator.generateDungeon());
 		this.setPlayer(new Player(map,50,50));
 		Wraith wraith = new Wraith(map,51,51);
-		Goblin goblin = new Goblin(map,52,52);
+		Goblin goblin = new Goblin(map,51,52);
 		entities.add(wraith);
 		entities.add(goblin);
 	}
@@ -67,6 +66,7 @@ public class GameScreen implements Screen, InputProcessor {
 		
 		INTERFACE.begin();
 		font.draw(INTERFACE, "Dungeon Crawler v0.1", 10, 10);
+		font.draw(INTERFACE, "Turn: " + turn, 10, 40);
 		INTERFACE.end();
 	}
 
@@ -112,6 +112,10 @@ public class GameScreen implements Screen, InputProcessor {
 	
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+	
+	public static void incrementTurn() {
+		turn += 1;
 	}
 
 	@Override
@@ -171,8 +175,6 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		selectX = screenX;
-		selectY = screenY;
 		return false;
 	}
 
@@ -184,29 +186,6 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		int xDist = selectX - screenX;
-		int yDist = selectY - screenY;
-		float camX = CAMERA.viewportWidth / 2;
-		float camY = CAMERA.viewportHeight / 2;
-
-		float xMov = xDist * TileMap.ACTUALSCALE;
-		float yMov = yDist * TileMap.ACTUALSCALE;
-
-		if (xMov + CAMERA.position.x <= camX) {
-			xMov = camX - CAMERA.position.x;
-		} else if (xMov + CAMERA.position.x >= map.MAP_WIDTH - camX) {
-			xMov = map.MAP_WIDTH - camX - CAMERA.position.x;
-		}
-
-		if (yMov + CAMERA.position.y <= camY) {
-			yMov = camY - CAMERA.position.y;
-		} else if (yMov + CAMERA.position.y >= map.MAP_HEIGHT - camY) {
-			yMov = map.MAP_HEIGHT - camY - CAMERA.position.y;
-		}
-		
-		CAMERA.translate(xMov, yMov, 0);
-		selectX = screenX;
-		selectY = screenY;
 		return false;
 	}
 

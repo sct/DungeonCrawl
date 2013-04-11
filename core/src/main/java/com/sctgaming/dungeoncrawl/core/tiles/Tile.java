@@ -133,7 +133,7 @@ public abstract class Tile implements Tickable {
 
 	@Override
 	public void render(float dt) {
-		GameScreen.BATCH.draw(this.getRenderTexture(), this.getX(), this.getY() + 1, 1, -1);
+		GameScreen.BATCH.draw(this.getRenderTexture(), this.getX() * 16, this.getY() * 16 + 16, 16, -16);
 	}
 
 	@Override

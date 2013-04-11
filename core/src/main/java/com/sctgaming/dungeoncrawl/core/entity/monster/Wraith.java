@@ -8,6 +8,7 @@ public class Wraith extends Monster {
 	public Wraith(TileMap map, int x, int y) {
 		super(map, x, y);
 		this.setMonsterTexture(EntityTextures.WRAITH);
+		setName("Wraith");
 	}
 
 }

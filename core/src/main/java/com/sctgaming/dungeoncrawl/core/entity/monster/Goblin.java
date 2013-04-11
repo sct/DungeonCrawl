@@ -8,6 +8,7 @@ public class Goblin extends Monster {
 	public Goblin(TileMap map, int x, int y) {
 		super(map, x, y);
 		this.setMonsterTexture(EntityTextures.GOBLIN);
+		setName("Goblin");
 	}
 
 }

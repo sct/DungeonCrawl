@@ -1,5 +1,8 @@
 package com.sctgaming.dungeoncrawl.core.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
@@ -11,7 +14,9 @@ import com.sctgaming.dungeoncrawl.core.utils.Directions;
 public abstract class Entity implements Tickable {
 	private int x;
 	private int y;
+	private String name = null;
 	private Tile tile = null;
+	private int viewRange = 0;
 	public TextureRegion texture = null;
 	public TileMap map;
 	public float time = 0;
@@ -42,6 +47,57 @@ public abstract class Entity implements Tickable {
 	
 	public void resetTime() {
 		this.time = 0;
+	}
+	
+	public void setViewRange(int viewRange) {
+		this.viewRange = viewRange;
+	}
+	
+	public int getViewRange() {
+		return viewRange;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public List<Tile> getViewTiles() {
+		List<Tile> tiles = new ArrayList<Tile>();
+		
+		for (int y = getViewRange() * -1;y<=getViewRange();y++) {
+			int xRange = getViewRange() - Math.abs(y);
+			for (int x = xRange * -1;x<=xRange;x++) {
+				if (!(x == 0 && y == 0)) {
+					tiles.add(tile.getRelative(x,y));
+				}
+			}
+		}
+		
+		return tiles;
+	}
+	
+	public List<Entity> getViewEntities() {
+		List<Entity> entities = new ArrayList<Entity>();
+		
+		for (int y = getViewRange() * -1;y<=getViewRange();y++) {
+			int xRange = getViewRange() - Math.abs(y);
+			for (int x = xRange * -1;x<=xRange;x++) {
+				if (!(x == 0 && y == 0)) {
+					for (Entity entity : GameScreen.entities) {
+						if (entity.getX() == this.getX() + x && entity.getY() == this.getY() + y) {
+							entities.add(entity);
+						}
+					}
+				}
+			}
+		}
+		
+		return entities;
+		
 	}
 	
 	public void setPosition(int x, int y) {
@@ -107,9 +163,9 @@ public abstract class Entity implements Tickable {
 	public void render(float dt) {
 		if (texture != null) {
 			if (flip) {
-				GameScreen.BATCH.draw(texture, this.getX() + 1, this.getY() + 1, -1, -1);
+				GameScreen.BATCH.draw(texture, this.getX() * 16 + 16, this.getY() * 16 + 16, -16, -16);
 			} else {
-				GameScreen.BATCH.draw(texture, this.getX(), this.getY() + 1, 1, -1);
+				GameScreen.BATCH.draw(texture, this.getX() * 16, this.getY() * 16 + 16, 16, -16);
 			}
 		}
 	}

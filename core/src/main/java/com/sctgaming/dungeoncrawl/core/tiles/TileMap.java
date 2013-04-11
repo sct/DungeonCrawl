@@ -29,13 +29,13 @@ public class TileMap implements Tickable {
 		populateColumns(w,h);
 		
 		camera = new OrthographicCamera();
-		camera.setToOrtho(true, TILES_WIDTH, TILES_HEIGHT);
+		camera.setToOrtho(true, 400, 300);
 		
 		/*
 		 * Move the camera to the center of the map
 		 */
 		Vector3 pos = new Vector3();
-		pos.set(MAP_WIDTH/2-camera.viewportWidth/2,MAP_HEIGHT/2-camera.viewportHeight/2,0);
+		pos.set(MAP_WIDTH*16/2-camera.viewportWidth/2,MAP_HEIGHT*16/2-camera.viewportHeight/2,0);
 		camera.translate(pos.x,pos.y);
 		
 		camera.update();
