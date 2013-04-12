@@ -2,7 +2,6 @@ package com.sctgaming.dungeoncrawl.core.tiles;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,14 +9,11 @@ import java.util.Random;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector3;
-import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Corridor;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Door;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Floor;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Room;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Wall;
-import com.sctgaming.dungeoncrawl.core.utils.TileTextures;
 
 /**
  * Generates a random dungeon based on a provided seed

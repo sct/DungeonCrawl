@@ -3,6 +3,7 @@ package com.sctgaming.dungeoncrawl.core.tiles;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
@@ -19,6 +20,9 @@ public abstract class Tile implements Tickable {
 	private TextureRegion texture;
 	private int cost = 1;
 	private boolean usable = false;
+	private Color color = Color.WHITE;
+	private boolean visible = false;
+	private boolean lit = false;
 	
 	public Tile(TileMap map, int x, int y, boolean obstructed) {
 		this.map = map;
@@ -97,8 +101,32 @@ public abstract class Tile implements Tickable {
 		return cost;
 	}
 	
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
+	public Color getColor() {
+		return color;
+	}
+	
+	public boolean isVisible() {
+		return visible;
+	}
+	
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+	
+	public boolean isLit() {
+		return lit;
+	}
+	
+	public void setLit(boolean lit) {
+		this.lit = lit;
+	}
+	
 	public Entity getEntity() {
-		for (Entity entity : GameScreen.entities) {
+		for (Entity entity : map.getEntities()) {
 			if (this.getX() == entity.getX() && this.getY() == entity.getY()) {
 				return entity;
 			}
@@ -133,7 +161,20 @@ public abstract class Tile implements Tickable {
 
 	@Override
 	public void render(float dt) {
-		GameScreen.BATCH.draw(this.getRenderTexture(), this.getX() * 16, this.getY() * 16 + 16, 16, -16);
+		if (isVisible()) {
+			Color clr = getColor().cpy();
+			if (!isLit()) {
+				clr.r *= 0.3f;
+				clr.g *= 0.3f;
+				clr.b *= 0.3f;
+			}
+			GameScreen.BATCH.setColor(clr);
+			GameScreen.BATCH.draw(this.getRenderTexture(), this.getX() * 16, this.getY() * 16 + 16, 16, -16);
+			GameScreen.BATCH.setColor(1,1,1,1);
+			if (isLit()) {
+				setLit(false);
+			}
+		}
 	}
 
 	@Override

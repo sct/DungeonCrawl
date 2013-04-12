@@ -2,6 +2,7 @@ package com.sctgaming.dungeoncrawl.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -9,24 +10,26 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
+import com.sctgaming.dungeoncrawl.core.entity.LivingEntity;
 import com.sctgaming.dungeoncrawl.core.entity.Player;
-import com.sctgaming.dungeoncrawl.core.entity.monster.Goblin;
-import com.sctgaming.dungeoncrawl.core.entity.monster.Wraith;
+import com.sctgaming.dungeoncrawl.core.entity.type.EntityType;
+import com.sctgaming.dungeoncrawl.core.entity.type.PlayerType;
+import com.sctgaming.dungeoncrawl.core.entity.type.Types;
+import com.sctgaming.dungeoncrawl.core.entity.type.monster.Monsters;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMapGenerator;
+import com.sctgaming.dungeoncrawl.core.tiles.TileMapSpawner;
+import com.sctgaming.dungeoncrawl.core.ui.GameOverlay;
 import com.sctgaming.dungeoncrawl.core.utils.Directions;
 
 public class GameScreen implements Screen, InputProcessor {
 	private TileMap map;
-	private Player player;
+	public static Player player;
 	public static OrthographicCamera CAMERA;
-	public static OrthographicCamera ICAMERA;
 	public static SpriteBatch BATCH;
-	public static SpriteBatch INTERFACE;
-	public static BitmapFont font = new BitmapFont(true);
+	public static GameOverlay overlay;
 	public static List<Entity> entities = new ArrayList<Entity>();
 	
 	private static int turn = 0;
@@ -34,15 +37,12 @@ public class GameScreen implements Screen, InputProcessor {
 	public GameScreen() {
 		Gdx.input.setInputProcessor(this);
 		BATCH = new SpriteBatch();
-		INTERFACE = new SpriteBatch();
-		ICAMERA = new OrthographicCamera();
-		ICAMERA.setToOrtho(true);
+		overlay = new GameOverlay();
+		
 		this.setMap(TileMapGenerator.generateDungeon());
-		this.setPlayer(new Player(map,50,50));
-		Wraith wraith = new Wraith(map,51,51);
-		Goblin goblin = new Goblin(map,51,52);
-		entities.add(wraith);
-		entities.add(goblin);
+		this.setPlayer(new Player(new PlayerType(),map,50,50));
+		Types.initializeMonsters();
+		TileMapSpawner.spawnMonsters(map);
 	}
 
 	@Override
@@ -51,7 +51,6 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		BATCH.setProjectionMatrix(CAMERA.combined);
-		INTERFACE.setProjectionMatrix(ICAMERA.combined);
 		BATCH.begin();
 		map.update(delta);
 		player.update(delta);
@@ -64,10 +63,7 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 		BATCH.end();
 		
-		INTERFACE.begin();
-		font.draw(INTERFACE, "Dungeon Crawler v0.1", 10, 10);
-		font.draw(INTERFACE, "Turn: " + turn, 10, 40);
-		INTERFACE.end();
+		overlay.render(delta);
 	}
 
 	@Override
@@ -116,6 +112,10 @@ public class GameScreen implements Screen, InputProcessor {
 	
 	public static void incrementTurn() {
 		turn += 1;
+	}
+	
+	public static int getTurn() {
+		return turn;
 	}
 
 	@Override

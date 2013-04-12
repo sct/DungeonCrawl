@@ -25,10 +25,10 @@ public class Corridor extends Floor {
 	
 	@Override
 	public TextureRegion getRenderTexture() {
-		boolean north = getRelative(Directions.NORTH) instanceof Corridor;
-		boolean south = getRelative(Directions.SOUTH) instanceof Corridor;
-		boolean east = getRelative(Directions.EAST) instanceof Corridor;
-		boolean west = getRelative(Directions.WEST) instanceof Corridor;
+		boolean north = getRelative(Directions.NORTH) instanceof Corridor || getRelative(Directions.NORTH) instanceof Door;
+		boolean south = getRelative(Directions.SOUTH) instanceof Corridor || getRelative(Directions.SOUTH) instanceof Door;
+		boolean east = getRelative(Directions.EAST) instanceof Corridor || getRelative(Directions.EAST) instanceof Door;
+		boolean west = getRelative(Directions.WEST) instanceof Corridor || getRelative(Directions.WEST) instanceof Door;
 		
 		return TextureBlender.getRegion(getTexture(), north, south, east, west);
 	}

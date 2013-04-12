@@ -1,19 +1,18 @@
 package com.sctgaming.dungeoncrawl.core.entity;
 
+import com.sctgaming.dungeoncrawl.core.entity.type.EntityType;
 import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
 
 public class LivingEntity extends Entity {
-	public int maxHealth = 10;
-	public int health = 10;
 
-	public LivingEntity(TileMap map, int x, int y) {
-		super(map, x, y);
+	public LivingEntity(EntityType type, TileMap map, int x, int y) {
+		super(type, map, x, y);
 	}
 	
 	@Override
 	public boolean setRelativePosition(int x, int y) {
-		Tile tile = map.getTile(getX() + x, getY() + y);
+		Tile tile = getMap().getTile(getX() + x, getY() + y);
 		if (tile == null || tile.isObstructed() || tile.getEntity() != null) {
 			return false;
 		}
@@ -22,8 +21,7 @@ public class LivingEntity extends Entity {
 
 	@Override
 	public void run(float time) {
-		// TODO Auto-generated method stub
-		
+		animate();
 	}
 
 }

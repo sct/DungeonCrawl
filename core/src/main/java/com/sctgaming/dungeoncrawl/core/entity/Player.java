@@ -1,6 +1,7 @@
 package com.sctgaming.dungeoncrawl.core.entity;
 
 import com.sctgaming.dungeoncrawl.core.GameScreen;
+import com.sctgaming.dungeoncrawl.core.entity.type.EntityType;
 import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
 import com.sctgaming.dungeoncrawl.core.utils.Directions;
@@ -9,10 +10,11 @@ import com.sctgaming.dungeoncrawl.core.utils.Textures;
 
 public class Player extends LivingEntity {
 
-	public Player(TileMap map, int x, int y) {
-		super(map, x, y);
-		this.setTexture(Textures.PLAYER,PlayerTextures.WIZARD.getX(),PlayerTextures.WIZARD.getY());
-		setViewRange(3);
+	public Player(EntityType type, TileMap map, int x, int y) {
+		super(type, map, x, y);
+		type.setTexture(Textures.PLAYER,PlayerTextures.WIZARD.getX(),PlayerTextures.WIZARD.getY());
+		setViewRange(6);
+		setVisible(true);
 	}
 	
 	@Override
@@ -31,16 +33,12 @@ public class Player extends LivingEntity {
 		return false;
 	}
 	
-	public boolean isMoving() {
-		return isMoving;
-	}
-	
 	public void setMoving(boolean isMoving) {
 		if (isMoving) {
 			move(getDirection());
 			resetTime();
 		}
-		this.isMoving = isMoving;
+		super.setMoving(isMoving);
 	}
 	
 	public void action() {
@@ -61,8 +59,16 @@ public class Player extends LivingEntity {
 	public void run(float time) {
 		animate();
 		if (isMoving()) {
-			move(direction);
+			move(getDirection());
 		}
+		
+	}
+	
+	@Override
+	public void update(float dt) {
+		getFieldOfView();
+		super.update(dt);
+		setVisible(true);
 	}
 
 }

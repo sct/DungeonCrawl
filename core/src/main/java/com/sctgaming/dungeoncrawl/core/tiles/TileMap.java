@@ -3,22 +3,30 @@ package com.sctgaming.dungeoncrawl.core.tiles;
 import java.util.ArrayList;
 import java.util.List;
 
+import rlforj.los.ILosAlgorithm;
+import rlforj.los.ILosBoard;
+import rlforj.los.ShadowCasting;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
+import com.sctgaming.dungeoncrawl.core.entity.Entity;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Door;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Room;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Void;
 
-public class TileMap implements Tickable {
+public class TileMap implements Tickable, ILosBoard {
 	public static final float UNITSCALE = 1 / 16f;
 	public static final float ACTUALSCALE = 1 / 32f;
-	private static final float TILES_WIDTH = 20;
-	private static final float TILES_HEIGHT = 14.375f;
 	public int MAP_WIDTH;
 	public int MAP_HEIGHT;
 	private OrthographicCamera camera;
+	private List<Entity> entities = new ArrayList<Entity>();
 	private List<List<Tile>> tiles = new ArrayList<List<Tile>>();
 	private List<Room> rooms = new ArrayList<Room>();
 	private List<Door> doors = new ArrayList<Door>();
@@ -29,13 +37,13 @@ public class TileMap implements Tickable {
 		populateColumns(w,h);
 		
 		camera = new OrthographicCamera();
-		camera.setToOrtho(true, 400, 300);
+		camera.setToOrtho(true, 640, 360);
 		
 		/*
 		 * Move the camera to the center of the map
 		 */
 		Vector3 pos = new Vector3();
-		pos.set(MAP_WIDTH*16/2-camera.viewportWidth/2,MAP_HEIGHT*16/2-camera.viewportHeight/2,0);
+		pos.set(((MAP_WIDTH*16)+180)/2-camera.viewportWidth/2,MAP_HEIGHT*16/2-camera.viewportHeight/2,0);
 		camera.translate(pos.x,pos.y);
 		
 		camera.update();
@@ -75,6 +83,14 @@ public class TileMap implements Tickable {
 		rooms.add(room);
 	}
 	
+	public void addEntity(Entity entity) {
+		entities.add(entity);
+	}
+	
+	public List<Entity> getEntities() {
+		return entities;
+	}
+	
 	/**
 	 * Populates the multi-dimensional List with nulls to prevent
 	 * out of bounds exception errors when checking for tiles
@@ -107,11 +123,47 @@ public class TileMap implements Tickable {
 				}
 			}
 		}
+		
+		for (Entity entity : this.getEntities()) {
+			entity.render(dt);
+		}
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean contains(int x, int y) {
+		if (getTile(x, y) != null) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isObstacle(int x, int y) {
+		if (getTile(x,y).isObstructed()) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void visit(int x, int y) {
+		getTile(x,y).setVisible(true);
+		getTile(x,y).setLit(true);
+		
+		Entity ent = getTile(x,y).getEntity();
+		if (ent != null) {
+			ent.setVisible(true);
+			ILosAlgorithm a = new ShadowCasting();
+			if (a.existsLineOfSight(this,GameScreen.player.getX(), GameScreen.player.getY(), x, y, false)) {
+				System.out.println("[Sighted] " + ent.toString() + " can see the player!");
+			}
+		}
 		
 	}
 
