@@ -109,8 +109,9 @@ public class TileMap implements Tickable, ILosBoard {
 
 	@Override
 	public void update(float dt) {
-		// TODO Auto-generated method stub
-		
+		for (Entity entity : this.getEntities()) {
+			entity.update(dt);
+		}
 	}
 
 	@Override
@@ -159,10 +160,6 @@ public class TileMap implements Tickable, ILosBoard {
 		Entity ent = getTile(x,y).getEntity();
 		if (ent != null) {
 			ent.setVisible(true);
-			ILosAlgorithm a = new ShadowCasting();
-			if (a.existsLineOfSight(this,GameScreen.player.getX(), GameScreen.player.getY(), x, y, false)) {
-				System.out.println("[Sighted] " + ent.toString() + " can see the player!");
-			}
 		}
 		
 	}
