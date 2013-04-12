@@ -4,14 +4,12 @@ import com.sctgaming.dungeoncrawl.core.utils.EntityTextures;
 import com.sctgaming.dungeoncrawl.core.utils.Textures;
 
 public class LivingType extends EntityType {
-	
 	private int maxHealth;
-	private boolean hostile = false;
 
 	public LivingType(String name, int maxHealth, boolean hostile) {
 		super(name);
 		this.maxHealth = maxHealth;
-		this.hostile = hostile;
+		setHostile(hostile);
 	}
 	
 	public int getMaxHealth() {
@@ -20,10 +18,6 @@ public class LivingType extends EntityType {
 	
 	public void setMaxHealth(int maxHealth) {
 		this.maxHealth = maxHealth;
-	}
-	
-	public boolean isHostile() {
-		return hostile;
 	}
 	
 	public void setMonsterTexture(EntityTextures entity) {

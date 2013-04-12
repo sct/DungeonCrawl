@@ -14,7 +14,7 @@ public class TileMapSpawner {
 	
 	public static void spawnMonsters(TileMap map) {
 		currentMap = map;
-		int maxMonsters = 50;
+		int maxMonsters = 200;
 		int monsters = 0;
 		
 		Random rand = new Random();

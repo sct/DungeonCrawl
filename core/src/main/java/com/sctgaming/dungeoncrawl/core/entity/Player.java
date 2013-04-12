@@ -15,6 +15,7 @@ public class Player extends LivingEntity {
 		type.setTexture(Textures.PLAYER,PlayerTextures.WIZARD.getX(),PlayerTextures.WIZARD.getY());
 		setViewRange(6);
 		setVisible(true);
+		getFieldOfView();
 	}
 	
 	@Override
@@ -24,14 +25,6 @@ public class Player extends LivingEntity {
 		super.setPosition(x, y);
 	}
 	
-	@Override
-	public boolean setRelativePosition(int x, int y) {
-		if (super.setRelativePosition(x, y)) {
-			
-			return true;
-		}
-		return false;
-	}
 	
 	public void setMoving(boolean isMoving) {
 		if (isMoving) {
@@ -47,6 +40,7 @@ public class Player extends LivingEntity {
 				adjacent.use();
 			}
 		}
+		GameScreen.incrementTurn();
 	}
 	
 	@Override
@@ -65,10 +59,13 @@ public class Player extends LivingEntity {
 	}
 	
 	@Override
-	public void update(float dt) {
+	public void turn() {
 		getFieldOfView();
+	}
+	
+	@Override
+	public void update(float dt) {
 		super.update(dt);
-		setVisible(true);
 	}
 
 }

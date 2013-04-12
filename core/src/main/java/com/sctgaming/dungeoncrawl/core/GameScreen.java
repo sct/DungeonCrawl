@@ -2,7 +2,6 @@ package com.sctgaming.dungeoncrawl.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -12,12 +11,9 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
-import com.sctgaming.dungeoncrawl.core.entity.LivingEntity;
 import com.sctgaming.dungeoncrawl.core.entity.Player;
-import com.sctgaming.dungeoncrawl.core.entity.type.EntityType;
 import com.sctgaming.dungeoncrawl.core.entity.type.PlayerType;
 import com.sctgaming.dungeoncrawl.core.entity.type.Types;
-import com.sctgaming.dungeoncrawl.core.entity.type.monster.Monsters;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMapGenerator;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMapSpawner;
@@ -25,7 +21,7 @@ import com.sctgaming.dungeoncrawl.core.ui.GameOverlay;
 import com.sctgaming.dungeoncrawl.core.utils.Directions;
 
 public class GameScreen implements Screen, InputProcessor {
-	private TileMap map;
+	public static TileMap map;
 	public static Player player;
 	public static OrthographicCamera CAMERA;
 	public static SpriteBatch BATCH;
@@ -39,8 +35,8 @@ public class GameScreen implements Screen, InputProcessor {
 		BATCH = new SpriteBatch();
 		overlay = new GameOverlay();
 		
-		this.setMap(TileMapGenerator.generateDungeon());
-		this.setPlayer(new Player(new PlayerType(),map,50,50));
+		setMap(TileMapGenerator.generateDungeon());
+		setPlayer(new Player(new PlayerType(),map,50,50));
 		Types.initializeMonsters();
 		TileMapSpawner.spawnMonsters(map);
 	}
@@ -102,15 +98,17 @@ public class GameScreen implements Screen, InputProcessor {
 		
 	}
 	
-	private void setMap(TileMap map) {
-		this.map = map;
+	private static void setMap(TileMap newMap) {
+		map = newMap;
 	}
 	
-	public void setPlayer(Player player) {
-		this.player = player;
+	public static void setPlayer(Player newPlayer) {
+		player = newPlayer;
 	}
 	
 	public static void incrementTurn() {
+		map.turn();
+		player.turn();
 		turn += 1;
 	}
 	

@@ -23,6 +23,13 @@ public interface Tickable {
 	 * @param dt delta time since last render operation in seconds
 	 */
 	public void render(float dt);
+	
+	/**
+	 * Represents a single turns logic
+	 * 
+	 * @param dt delta time since last turn operation in seconds
+	 */
+	public void turn();
 
 	/**
 	 * Disposes any game or render objects on system exit.

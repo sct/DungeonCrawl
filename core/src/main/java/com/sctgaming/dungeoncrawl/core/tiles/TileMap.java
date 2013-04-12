@@ -1,21 +1,20 @@
 package com.sctgaming.dungeoncrawl.core.tiles;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import rlforj.los.ILosAlgorithm;
 import rlforj.los.ILosBoard;
 import rlforj.los.ShadowCasting;
+import rlforj.math.Point2I;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
+import com.sctgaming.dungeoncrawl.core.entity.LivingEntity;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Door;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Room;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Void;
@@ -113,6 +112,22 @@ public class TileMap implements Tickable, ILosBoard {
 			entity.update(dt);
 		}
 	}
+	
+	@Override
+	public void turn() {
+		for (List<Tile> column : this.getTiles()) {
+			for (Tile tile : column) {
+				if (tile != null)
+				{
+					tile.turn();
+				}
+			}
+		}
+		
+		for (Entity entity : this.getEntities()) {
+			entity.turn();
+		}
+	}
 
 	@Override
 	public void render(float dt) {
@@ -160,6 +175,15 @@ public class TileMap implements Tickable, ILosBoard {
 		Entity ent = getTile(x,y).getEntity();
 		if (ent != null) {
 			ent.setVisible(true);
+			
+			ILosAlgorithm a = new ShadowCasting();
+			
+			if (ent.getType().isHostile() && a.existsLineOfSight(this, ent.getX(), ent.getY(), GameScreen.player.getX(), GameScreen.player.getY(), true)) {
+				List<Point2I> path = a.getProjectPath();
+				path.remove(0);
+				ent.moveToPosition(path.get(0).x, path.get(0).y);
+				System.out.println("[Sighted] " + ent.toString() + " can see the player!");
+			}
 		}
 		
 	}

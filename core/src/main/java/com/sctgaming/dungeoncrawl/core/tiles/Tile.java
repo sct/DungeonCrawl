@@ -158,6 +158,11 @@ public abstract class Tile implements Tickable {
 	public void update(float dt) {
 		
 	}
+	
+	@Override
+	public void turn() {
+		setLit(false);
+	}
 
 	@Override
 	public void render(float dt) {
@@ -171,9 +176,6 @@ public abstract class Tile implements Tickable {
 			GameScreen.BATCH.setColor(clr);
 			GameScreen.BATCH.draw(this.getRenderTexture(), this.getX() * 16, this.getY() * 16 + 16, 16, -16);
 			GameScreen.BATCH.setColor(1,1,1,1);
-			if (isLit()) {
-				setLit(false);
-			}
 		}
 	}
 

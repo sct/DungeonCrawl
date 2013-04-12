@@ -30,6 +30,12 @@ public class GameOverlay implements Tickable {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void turn() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void render(float dt) {

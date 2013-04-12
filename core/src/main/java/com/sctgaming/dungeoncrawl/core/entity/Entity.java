@@ -81,7 +81,9 @@ public abstract class Entity implements Tickable {
 		this.moving = moving;
 	}
 	
-    
+    public EntityType getType() {
+		return type;
+	}
 	
 	public List<Tile> getViewTiles() {
 		List<Tile> tiles = new ArrayList<Tile>();
@@ -138,6 +140,12 @@ public abstract class Entity implements Tickable {
 		setRelativePosition(direction.getX(), direction.getY());
 	}
 	
+	public void moveToPosition(int x, int y) {
+		if ((GameScreen.player.getX() != x && GameScreen.player.getY() != y) && map.getTile(x, y).getEntity() == null && !map.getTile(x, y).isObstructed()) {
+			this.setPosition(map.getTile(x, y).getX(), map.getTile(x, y).getY());
+		}
+	}
+	
 	public Directions getDirection() {
 		return direction;
 	}
@@ -155,10 +163,10 @@ public abstract class Entity implements Tickable {
 	
 	public void animate() {
 		if (animate) {
-			type.texture.setRegion(type.texture.getRegionX() - 16, type.texture.getRegionY(), 16, 16);
+			type.texture.setRegion(0, type.texture.getRegionY(), 16, 16);
 			animate = false;
 		} else {
-			type.texture.setRegion(type.texture.getRegionX() + 16, type.texture.getRegionY(), 16, 16);
+			type.texture.setRegion(16, type.texture.getRegionY(), 16, 16);
 			animate = true;
 		}
 	}
@@ -173,6 +181,12 @@ public abstract class Entity implements Tickable {
 			time = 0;
 		}
 	}
+	
+	@Override
+	public void turn() {
+		setVisible(false);
+		
+	}
 
 	@Override
 	public void render(float dt) {
@@ -185,7 +199,6 @@ public abstract class Entity implements Tickable {
 				}
 			}
 		}
-		setVisible(false);
 	}
 
 	@Override
