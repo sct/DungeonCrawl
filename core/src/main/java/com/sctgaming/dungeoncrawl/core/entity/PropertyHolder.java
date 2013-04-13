@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PropertyHolder {
+public class PropertyHolder implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private final Map<String, Object> properties = new HashMap<String, Object>();
 
 	/**

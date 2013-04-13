@@ -5,11 +5,11 @@ import com.sctgaming.dungeoncrawl.core.entity.Properties;
 import com.sctgaming.dungeoncrawl.core.entity.type.LivingType;
 import com.sctgaming.dungeoncrawl.core.utils.EntityTextures;
 
-public class Goblin extends LivingType {
+public class Rat extends LivingType {
 
-	public Goblin() {
-		super("Goblin",true);
-		setMonsterTexture(EntityTextures.GOBLIN);
+	public Rat() {
+		super("Rat", true);
+		setMonsterTexture(EntityTextures.RAT);
 	}
 	
 	@Override

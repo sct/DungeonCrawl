@@ -2,7 +2,9 @@ package com.sctgaming.dungeoncrawl.core.utils;
 
 public enum EntityTextures {
 	GOBLIN (0,0),
-	WRAITH (0,1);
+	WRAITH (0,1),
+	RAT (0,2),
+	SKELETON (0,3);
 	
 	private final int x;
 	private final int y;

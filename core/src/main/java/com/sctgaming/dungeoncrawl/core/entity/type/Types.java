@@ -10,6 +10,7 @@ import com.sctgaming.dungeoncrawl.core.entity.type.monster.Monsters;
 public class Types {
 	
 	public static List<EntityType> MONSTER_TYPES = new ArrayList<EntityType>();
+	public static List<WeaponType> WEAPON_TYPES = new ArrayList<WeaponType>();
 	
 	public static void initializeMonsters() {
 		Field[] fields = Monsters.class.getFields();
@@ -27,7 +28,11 @@ public class Types {
 		}
 	}
 	
-	public static void registerMonster(EntityType monster) {
+	public static void registerWeapon(WeaponType weapon) {
+		WEAPON_TYPES.add(weapon);
+	}
+	
+	private static void registerMonster(EntityType monster) {
 		
 		MONSTER_TYPES.add(monster);
 	}

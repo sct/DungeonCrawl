@@ -6,7 +6,6 @@ import java.util.List;
 import rlforj.los.ILosAlgorithm;
 import rlforj.los.ILosBoard;
 import rlforj.los.ShadowCasting;
-import rlforj.math.Point2I;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;

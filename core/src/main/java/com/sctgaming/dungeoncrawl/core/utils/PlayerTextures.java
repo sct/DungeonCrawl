@@ -1,7 +1,7 @@
 package com.sctgaming.dungeoncrawl.core.utils;
 
 public enum PlayerTextures {
-	WIZARD (0,0);
+	WIZARD (0,1);
 	
 	private final int x;
 	private final int y;

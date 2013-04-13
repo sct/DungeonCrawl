@@ -5,17 +5,17 @@ import com.sctgaming.dungeoncrawl.core.entity.Properties;
 import com.sctgaming.dungeoncrawl.core.entity.type.LivingType;
 import com.sctgaming.dungeoncrawl.core.utils.EntityTextures;
 
-public class Goblin extends LivingType {
+public class Skeleton extends LivingType {
 
-	public Goblin() {
-		super("Goblin",true);
-		setMonsterTexture(EntityTextures.GOBLIN);
+	public Skeleton() {
+		super("Skeleton", true);
+		setMonsterTexture(EntityTextures.SKELETON);
 	}
 	
 	@Override
 	public void create(Entity entity) {
-		entity.setProperty(Properties.EXP_REWARD, 35);
-		entity.setProperty(Properties.CON, 1);
+		entity.setProperty(Properties.EXP_REWARD, 50);
+		entity.setProperty(Properties.CON, 2);
 		super.create(entity);
 	}
 

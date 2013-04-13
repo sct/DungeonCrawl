@@ -1,6 +1,5 @@
 package com.sctgaming.dungeoncrawl.core.entity;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,6 +174,7 @@ public abstract class Entity extends PropertyHolder implements Tickable {
 	
 	public void die() {
 		if (!(this instanceof Player)) {
+			GameScreen.player.getType().addXP(GameScreen.player,this.getProperty(Properties.EXP_REWARD));
 			getMap().removeEntity(this);
 		} else {
 			System.out.println("[Combat] The player is dead, but we can't really do anything about it yet.");

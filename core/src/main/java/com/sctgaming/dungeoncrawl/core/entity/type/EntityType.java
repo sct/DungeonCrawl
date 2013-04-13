@@ -19,6 +19,10 @@ public abstract class EntityType {
 	
 	public abstract void create(Entity entity);
 	
+	public void addXP(Entity ent, int exp) {}
+	
+	public void levelUp(Entity ent) {}
+	
 	public void setName(String name) {
 		this.name = name;
 	}

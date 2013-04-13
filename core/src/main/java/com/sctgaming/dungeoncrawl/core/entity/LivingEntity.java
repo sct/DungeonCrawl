@@ -14,11 +14,13 @@ public class LivingEntity extends Entity {
 	@Override
 	public boolean setRelativePosition(int x, int y) {
 		Tile tile = getMap().getTile(getX() + x, getY() + y);
-		Entity ent = tile.getEntity();
+		if (tile != null) {
+			Entity ent = tile.getEntity();
 		
-		if (ent != null && (ent.equals(GameScreen.player) || this instanceof Player)) {
-			getType().attack(this, ent);
-			return false;
+			if (ent != null && (ent.equals(GameScreen.player) || this instanceof Player)) {
+				getType().attack(this, ent);
+				return false;
+			}
 		}
 		
 		if (tile == null || tile.isObstructed()) {

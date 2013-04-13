@@ -38,4 +38,16 @@ public class Properties {
 	 * Default value of 5
 	 */
 	public static final Property<Integer> CON = new Property<Integer>("con", Integer.class, 5);
+	
+	/**
+	 * Amount of exp rewarded to player on death
+	 * Default value of 1
+	 */
+	public static final Property<Integer> EXP_REWARD = new Property<Integer>("expReward", Integer.class, 1);
+	
+	/**
+	 * Equipped Weapon
+	 * Default value of null
+	 */
+	public static final Property<Weapon> WEAPON = new Property<Weapon>("weapon", Weapon.class);
 }
