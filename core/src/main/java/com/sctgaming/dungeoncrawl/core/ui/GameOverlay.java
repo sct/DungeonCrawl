@@ -58,6 +58,7 @@ public class GameOverlay implements Tickable {
 		font.draw(fontBatch, "STR: " + GameScreen.player.getProperty(Properties.STR), sidePosX, 120);
 		font.draw(fontBatch, "AGI: " + GameScreen.player.getProperty(Properties.AGI), sidePosX, 140);
 		font.draw(fontBatch, "CON: " + GameScreen.player.getProperty(Properties.CON), sidePosX, 160);
+		font.draw(fontBatch, "Dodge Chance: " + (Formulas.getDodgeChance(GameScreen.player.getProperty(Properties.AGI), GameScreen.player.getProperty(Properties.LEVEL)) * 100) + "%", sidePosX, 180);
 		fontBatch.end();
 		
 		

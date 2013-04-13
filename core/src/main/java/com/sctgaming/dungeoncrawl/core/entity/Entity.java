@@ -109,7 +109,7 @@ public abstract class Entity extends PropertyHolder implements Tickable {
 			int xRange = getViewRange() - Math.abs(y);
 			for (int x = xRange * -1;x<=xRange;x++) {
 				if (!(x == 0 && y == 0)) {
-					for (Entity entity : GameScreen.entities) {
+					for (Entity entity : map.getEntities()) {
 						if (entity.getX() == this.getX() + x && entity.getY() == this.getY() + y) {
 							entities.add(entity);
 						}

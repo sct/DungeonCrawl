@@ -36,7 +36,7 @@ public class Player extends LivingEntity {
 	
 	public void action() {
 		for (Tile adjacent : getTile().getAdjacent()) {
-			if (adjacent.isUsable()) {
+			if (adjacent != null && adjacent.isUsable()) {
 				adjacent.use();
 			}
 		}

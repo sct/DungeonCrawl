@@ -10,7 +10,9 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
+import com.sctgaming.dungeoncrawl.core.entity.LivingEntity;
 import com.sctgaming.dungeoncrawl.core.entity.Player;
 import com.sctgaming.dungeoncrawl.core.entity.type.PlayerType;
 import com.sctgaming.dungeoncrawl.core.entity.type.Types;
@@ -25,14 +27,15 @@ public class GameScreen implements Screen, InputProcessor {
 	public static Player player;
 	public static OrthographicCamera CAMERA;
 	public static SpriteBatch BATCH;
+	public static ShapeRenderer SHAPE;
 	public static GameOverlay overlay;
-	public static List<Entity> entities = new ArrayList<Entity>();
 	
 	private static int turn = 0;
 	
 	public GameScreen() {
 		Gdx.input.setInputProcessor(this);
 		BATCH = new SpriteBatch();
+		SHAPE = new ShapeRenderer();
 		overlay = new GameOverlay();
 		
 		setMap(TileMapGenerator.generateDungeon());
@@ -47,17 +50,21 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		BATCH.setProjectionMatrix(CAMERA.combined);
+		SHAPE.setProjectionMatrix(CAMERA.combined);
 		BATCH.begin();
 		map.update(delta);
 		player.update(delta);
 		map.render(delta);
 		player.render(delta);
-		
-		for (Entity entity : entities) {
-			entity.update(delta);
-			entity.render(delta);
-		}
 		BATCH.end();
+		
+		/* Render all health bars */
+		player.renderHealth();
+		for (Entity entity : map.getEntities()) {
+			if (entity instanceof LivingEntity) {
+				((LivingEntity) entity).renderHealth();
+			}
+		}
 		
 		overlay.render(delta);
 	}

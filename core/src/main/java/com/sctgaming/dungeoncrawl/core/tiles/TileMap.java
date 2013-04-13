@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
+import com.sctgaming.dungeoncrawl.core.entity.LivingEntity;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Door;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Room;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Void;
@@ -144,6 +145,9 @@ public class TileMap implements Tickable, ILosBoard {
 		
 		for (Entity entity : this.getEntities()) {
 			entity.render(dt);
+			/*if (entity instanceof LivingEntity) {
+				((LivingEntity) entity).renderHealth();
+			}*/
 		}
 	}
 

@@ -5,7 +5,9 @@ import java.util.Random;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
+import com.sctgaming.dungeoncrawl.core.entity.Properties;
 import com.sctgaming.dungeoncrawl.core.utils.EntityTextures;
+import com.sctgaming.dungeoncrawl.core.utils.Formulas;
 
 public abstract class EntityType {
 	private String name;
@@ -57,9 +59,15 @@ public abstract class EntityType {
 		Random rand = new Random();
 		
 		int calcDamage = (rand.nextInt(damageMax - damageMin + 1) + damageMin);
+		float dodgeChance = Formulas.getDodgeChance(target.getProperty(Properties.AGI), target.getProperty(Properties.LEVEL));
 		
-		target.takeDamage(calcDamage);
-		System.out.println("[Combat] " + entity.toString() + " attacks " + target.toString() + " for " + calcDamage + " damage");
+		if (rand.nextFloat() > dodgeChance) {
+			target.takeDamage(calcDamage);
+			System.out.println("[Combat] " + entity.toString() + " attacks " + target.toString() + " for " + calcDamage + " damage");
+		} else {
+			System.out.println("[Combat] " + entity.toString() + " MISSES attack on " + target.toString());
+		}
+		
 	}
 	
 }
