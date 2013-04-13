@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
+import com.sctgaming.dungeoncrawl.core.entity.Properties;
+import com.sctgaming.dungeoncrawl.core.utils.Formulas;
 import com.sctgaming.dungeoncrawl.core.utils.Textures;
 
 public class GameOverlay implements Tickable {
@@ -50,6 +52,12 @@ public class GameOverlay implements Tickable {
 		fontBatch.begin();
 		font.draw(fontBatch, "Dungeon Crawler v0.1", sidePosX, 20);
 		font.draw(fontBatch, "Turn: " + GameScreen.getTurn(), sidePosX, 40);
+		font.draw(fontBatch, "Level: " + GameScreen.player.getProperty(Properties.LEVEL), sidePosX, 60);
+		font.draw(fontBatch, "Health: " + GameScreen.player.getProperty(Properties.HEALTH), sidePosX, 80);
+		font.draw(fontBatch, "EXP: " + GameScreen.player.getProperty(Properties.EXP) + "/" + Formulas.getTotalExp(GameScreen.player.getProperty(Properties.LEVEL)), sidePosX, 100);
+		font.draw(fontBatch, "STR: " + GameScreen.player.getProperty(Properties.STR), sidePosX, 120);
+		font.draw(fontBatch, "AGI: " + GameScreen.player.getProperty(Properties.AGI), sidePosX, 140);
+		font.draw(fontBatch, "CON: " + GameScreen.player.getProperty(Properties.CON), sidePosX, 160);
 		fontBatch.end();
 		
 		

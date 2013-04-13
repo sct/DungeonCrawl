@@ -1,5 +1,6 @@
 package com.sctgaming.dungeoncrawl.core.entity;
 
+import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.entity.type.EntityType;
 import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
@@ -15,14 +16,15 @@ public class LivingEntity extends Entity {
 		Tile tile = getMap().getTile(getX() + x, getY() + y);
 		Entity ent = tile.getEntity();
 		
-		if (ent != null) {
-			//getType().attack(ent);
+		if (ent != null && (ent.equals(GameScreen.player) || this instanceof Player)) {
+			getType().attack(this, ent);
 			return false;
 		}
 		
 		if (tile == null || tile.isObstructed()) {
 			return false;
 		}
+		
 		return super.setRelativePosition(x, y);
 	}
 

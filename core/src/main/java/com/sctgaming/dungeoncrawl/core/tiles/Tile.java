@@ -23,6 +23,7 @@ public abstract class Tile implements Tickable {
 	private Color color = Color.WHITE;
 	private boolean visible = false;
 	private boolean lit = false;
+	private int litTurn = 0;
 	
 	public Tile(TileMap map, int x, int y, boolean obstructed) {
 		this.map = map;
@@ -125,6 +126,14 @@ public abstract class Tile implements Tickable {
 		this.lit = lit;
 	}
 	
+	public int getLitTurn() {
+		return litTurn;
+	}
+	
+	public void setLitTurn(int litTurn) {
+		this.litTurn = litTurn;
+	}
+	
 	public Entity getEntity() {
 		for (Entity entity : map.getEntities()) {
 			if (this.getX() == entity.getX() && this.getY() == entity.getY()) {
@@ -161,7 +170,9 @@ public abstract class Tile implements Tickable {
 	
 	@Override
 	public void turn() {
-		setLit(false);
+		if (isLit() && getLitTurn() != GameScreen.getTurn()) {
+			setLit(false);
+		}
 	}
 
 	@Override

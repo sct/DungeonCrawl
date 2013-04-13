@@ -1,23 +1,24 @@
 package com.sctgaming.dungeoncrawl.core.entity.type;
 
+import com.sctgaming.dungeoncrawl.core.entity.Entity;
+import com.sctgaming.dungeoncrawl.core.entity.Properties;
 import com.sctgaming.dungeoncrawl.core.utils.EntityTextures;
+import com.sctgaming.dungeoncrawl.core.utils.Formulas;
 import com.sctgaming.dungeoncrawl.core.utils.Textures;
 
 public class LivingType extends EntityType {
-	private int maxHealth;
 
-	public LivingType(String name, int maxHealth, boolean hostile) {
+	public LivingType(String name, boolean hostile) {
 		super(name);
-		this.maxHealth = maxHealth;
 		setHostile(hostile);
 	}
 	
-	public int getMaxHealth() {
-		return maxHealth;
+	public void create(Entity entity) {
+		entity.setProperty(Properties.HEALTH, Formulas.getHealth(entity.getProperty(Properties.CON)));
 	}
 	
-	public void setMaxHealth(int maxHealth) {
-		this.maxHealth = maxHealth;
+	public int getMaxHealth(Entity ent) {
+		return Formulas.getHealth(ent.getProperty(Properties.CON));
 	}
 	
 	public void setMonsterTexture(EntityTextures entity) {

@@ -107,8 +107,8 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 	
 	public static void incrementTurn() {
-		map.turn();
 		player.turn();
+		map.turn();
 		turn += 1;
 	}
 	

@@ -1,5 +1,6 @@
 package com.sctgaming.dungeoncrawl.core.entity;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
 import com.sctgaming.dungeoncrawl.core.utils.Directions;
 
-public abstract class Entity implements Tickable {
+public abstract class Entity extends PropertyHolder implements Tickable {
 	private int x;
 	private int y;
 	private EntityType type;
@@ -26,6 +27,7 @@ public abstract class Entity implements Tickable {
 	public boolean animate = false;
 	public boolean flip = false;
 	private boolean visible = false;
+	private int turn = 0;
 	
 	
 	public Entity(EntityType type, TileMap map, int x, int y) {
@@ -34,6 +36,7 @@ public abstract class Entity implements Tickable {
 		this.x = x;
 		this.y = y;
 		this.tile = map.getTile(x, y);
+		type.create(this);
 	}
 	
 	public int getX() {
@@ -143,6 +146,8 @@ public abstract class Entity implements Tickable {
 	public void moveToPosition(int x, int y) {
 		if ((GameScreen.player.getX() != x && GameScreen.player.getY() != y) && map.getTile(x, y).getEntity() == null && !map.getTile(x, y).isObstructed()) {
 			this.setPosition(map.getTile(x, y).getX(), map.getTile(x, y).getY());
+		} else if (GameScreen.player.getX() == x && GameScreen.player.getY() == y) {
+			getType().attack(this, GameScreen.player);
 		}
 	}
 	
@@ -159,7 +164,31 @@ public abstract class Entity implements Tickable {
 		}
 	}
 	
+	public void takeDamage(int damage) {
+		int oldHealth = this.getProperty(Properties.HEALTH);
+		this.setProperty(Properties.HEALTH, oldHealth - damage);
+		
+		if (this.getProperty(Properties.HEALTH) <= 0) {
+			this.die();
+		}
+	}
 	
+	public void die() {
+		if (!(this instanceof Player)) {
+			getMap().removeEntity(this);
+		} else {
+			System.out.println("[Combat] The player is dead, but we can't really do anything about it yet.");
+		}
+		this.dispose();
+	}
+	
+	public int getTurn() {
+		return turn;
+	}
+	
+	public void setTurn(int turn) {
+		this.turn = turn;
+	}
 	
 	public void animate() {
 		if (animate) {
@@ -184,7 +213,9 @@ public abstract class Entity implements Tickable {
 	
 	@Override
 	public void turn() {
-		setVisible(false);
+		if (isVisible() && GameScreen.getTurn() != getTurn()) {
+			setVisible(false);
+		}
 		
 	}
 

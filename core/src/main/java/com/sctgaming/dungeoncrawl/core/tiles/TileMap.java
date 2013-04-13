@@ -1,7 +1,6 @@
 package com.sctgaming.dungeoncrawl.core.tiles;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import rlforj.los.ILosAlgorithm;
@@ -14,10 +13,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
-import com.sctgaming.dungeoncrawl.core.entity.LivingEntity;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Door;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Room;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Void;
+import com.sctgaming.dungeoncrawl.core.utils.Pathing;
 
 public class TileMap implements Tickable, ILosBoard {
 	public static final float UNITSCALE = 1 / 16f;
@@ -84,6 +83,10 @@ public class TileMap implements Tickable, ILosBoard {
 	
 	public void addEntity(Entity entity) {
 		entities.add(entity);
+	}
+	
+	public void removeEntity(Entity entity) {
+		entities.remove(entity);
 	}
 	
 	public List<Entity> getEntities() {
@@ -171,18 +174,20 @@ public class TileMap implements Tickable, ILosBoard {
 	public void visit(int x, int y) {
 		getTile(x,y).setVisible(true);
 		getTile(x,y).setLit(true);
+		getTile(x,y).setLitTurn(GameScreen.getTurn());
 		
 		Entity ent = getTile(x,y).getEntity();
 		if (ent != null) {
 			ent.setVisible(true);
+			ent.setTurn(GameScreen.getTurn());
 			
 			ILosAlgorithm a = new ShadowCasting();
 			
-			if (ent.getType().isHostile() && a.existsLineOfSight(this, ent.getX(), ent.getY(), GameScreen.player.getX(), GameScreen.player.getY(), true)) {
-				List<Point2I> path = a.getProjectPath();
-				path.remove(0);
-				ent.moveToPosition(path.get(0).x, path.get(0).y);
-				System.out.println("[Sighted] " + ent.toString() + " can see the player!");
+			if (ent.getType().isHostile() && a.existsLineOfSight(this, ent.getX(), ent.getY(), GameScreen.player.getX(), GameScreen.player.getY(), false)) {
+				List<Tile> path = Pathing.getPath(ent.getTile(), GameScreen.player.getTile());
+				if (path != null) {
+					ent.moveToPosition(path.get(0).getX(), path.get(0).getY());
+				}
 			}
 		}
 		
