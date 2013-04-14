@@ -6,11 +6,13 @@ import java.util.List;
 import rlforj.los.IFovAlgorithm;
 import rlforj.los.PrecisePermissive;
 
+import com.badlogic.gdx.graphics.Color;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
 import com.sctgaming.dungeoncrawl.core.entity.type.EntityType;
 import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
+import com.sctgaming.dungeoncrawl.core.ui.components.TurnLog;
 import com.sctgaming.dungeoncrawl.core.utils.Directions;
 
 public abstract class Entity extends PropertyHolder implements Tickable {
@@ -174,6 +176,7 @@ public abstract class Entity extends PropertyHolder implements Tickable {
 	
 	public void die() {
 		if (!(this instanceof Player)) {
+			TurnLog.addEntry(this.toString() + " has died", Color.RED);
 			GameScreen.player.getType().addXP(GameScreen.player,this.getProperty(Properties.EXP_REWARD));
 			getMap().removeEntity(this);
 		} else {

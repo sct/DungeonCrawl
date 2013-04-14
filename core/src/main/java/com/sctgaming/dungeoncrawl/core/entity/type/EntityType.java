@@ -2,10 +2,12 @@ package com.sctgaming.dungeoncrawl.core.entity.type;
 
 import java.util.Random;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
 import com.sctgaming.dungeoncrawl.core.entity.Properties;
+import com.sctgaming.dungeoncrawl.core.ui.components.TurnLog;
 import com.sctgaming.dungeoncrawl.core.utils.EntityTextures;
 import com.sctgaming.dungeoncrawl.core.utils.Formulas;
 
@@ -63,8 +65,10 @@ public abstract class EntityType {
 		
 		if (rand.nextFloat() > dodgeChance) {
 			target.takeDamage(calcDamage);
+			TurnLog.addEntry(entity.toString() + " attacks " + target.toString() + " for " + calcDamage + " damage");
 			System.out.println("[Combat] " + entity.toString() + " attacks " + target.toString() + " for " + calcDamage + " damage");
 		} else {
+			TurnLog.addEntry(entity.toString() + " MISSES attack on " + target.toString(),Color.RED);
 			System.out.println("[Combat] " + entity.toString() + " MISSES attack on " + target.toString());
 		}
 		

@@ -3,11 +3,13 @@ package com.sctgaming.dungeoncrawl.core.entity.type;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
 import com.sctgaming.dungeoncrawl.core.entity.Item;
 import com.sctgaming.dungeoncrawl.core.entity.Properties;
 import com.sctgaming.dungeoncrawl.core.entity.Weapon;
 import com.sctgaming.dungeoncrawl.core.player.Inventory;
+import com.sctgaming.dungeoncrawl.core.ui.components.TurnLog;
 import com.sctgaming.dungeoncrawl.core.utils.Formulas;
 
 public class PlayerType extends LivingType implements Inventory {
@@ -52,6 +54,7 @@ public class PlayerType extends LivingType implements Inventory {
 		
 		ent.setProperty(Properties.HEALTH, Formulas.getHealth(oldCon + 1));
 		
+		TurnLog.addEntry("Congratulations! You have leveled up. You are now level " + ent.getProperty(Properties.LEVEL),Color.YELLOW);
 		System.out.println("[Event] Player has leveled up! Player is now level " + ent.getProperty(Properties.LEVEL));
 	}
 

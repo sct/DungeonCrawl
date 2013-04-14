@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
 import com.sctgaming.dungeoncrawl.core.entity.Properties;
+import com.sctgaming.dungeoncrawl.core.ui.components.SideBar;
+import com.sctgaming.dungeoncrawl.core.ui.components.TurnLog;
 import com.sctgaming.dungeoncrawl.core.utils.Formulas;
 import com.sctgaming.dungeoncrawl.core.utils.Textures;
 
@@ -18,13 +20,18 @@ public class GameOverlay implements Tickable {
 	
 	public static OrthographicCamera fontCamera = new OrthographicCamera();
 	public static SpriteBatch fontBatch = new SpriteBatch();
-	public static BitmapFont font = new BitmapFont(Gdx.files.internal("visitor.fnt"), true);
+	public static BitmapFont font = new BitmapFont(Gdx.files.internal("04b03.fnt"), true);
+	
+	public static Container window = new Container();
 	
 	public GameOverlay() {
-		camera.setToOrtho(true, 640, 360);
+		camera.setToOrtho(true, 1280, 720);
 		fontCamera.setToOrtho(true);
 		batch.setProjectionMatrix(camera.combined);
 		fontBatch.setProjectionMatrix(fontCamera.combined);
+		
+		window.addComponent(new SideBar());
+		window.addComponent(new TurnLog());
 	}
 
 	@Override
@@ -48,18 +55,7 @@ public class GameOverlay implements Tickable {
 		batch.draw(sbg,camera.viewportWidth-sbg.getRegionWidth(),0);
 		batch.end();
 		
-		float sidePosX = fontCamera.viewportWidth - 430 + 20;
-		fontBatch.begin();
-		font.draw(fontBatch, "Dungeon Crawler v0.1", sidePosX, 20);
-		font.draw(fontBatch, "Turn: " + GameScreen.getTurn(), sidePosX, 40);
-		font.draw(fontBatch, "Level: " + GameScreen.player.getProperty(Properties.LEVEL), sidePosX, 60);
-		font.draw(fontBatch, "Health: " + GameScreen.player.getProperty(Properties.HEALTH) + "/" + Formulas.getHealth(GameScreen.player.getProperty(Properties.CON)), sidePosX, 80);
-		font.draw(fontBatch, "EXP: " + GameScreen.player.getProperty(Properties.EXP) + "/" + Formulas.getTotalExp(GameScreen.player.getProperty(Properties.LEVEL)), sidePosX, 100);
-		font.draw(fontBatch, "STR: " + GameScreen.player.getProperty(Properties.STR), sidePosX, 120);
-		font.draw(fontBatch, "AGI: " + GameScreen.player.getProperty(Properties.AGI), sidePosX, 140);
-		font.draw(fontBatch, "CON: " + GameScreen.player.getProperty(Properties.CON), sidePosX, 160);
-		font.draw(fontBatch, "Dodge Chance: " + (Formulas.getDodgeChance(GameScreen.player.getProperty(Properties.AGI), GameScreen.player.getProperty(Properties.LEVEL)) * 100) + "%", sidePosX, 180);
-		fontBatch.end();
+		window.render(dt);
 		
 		
 	}
