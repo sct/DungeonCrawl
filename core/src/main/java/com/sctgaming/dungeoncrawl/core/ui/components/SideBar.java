@@ -24,8 +24,9 @@ public class SideBar extends Component {
 		getFont().draw(getBatch(), "Health: " + GameScreen.player.getProperty(Properties.HEALTH) + "/" + Formulas.getHealth(GameScreen.player.getProperty(Properties.CON)), sidePosX, 80);
 		getFont().draw(getBatch(), "EXP: " + GameScreen.player.getProperty(Properties.EXP) + "/" + Formulas.getTotalExp(GameScreen.player.getProperty(Properties.LEVEL)), sidePosX, 100);
 		getFont().draw(getBatch(), "STR: " + GameScreen.player.getProperty(Properties.STR), sidePosX, 120);
-		getFont().draw(getBatch(), "AGI: " + GameScreen.player.getProperty(Properties.AGI), sidePosX, 140);
+		getFont().draw(getBatch(), "AGI: " + GameScreen.player.getProperty(Properties.AGI) + " + " + GameScreen.player.getType().getBonusStat(GameScreen.player, Properties.AGI), sidePosX, 140);
 		getFont().draw(getBatch(), "CON: " + GameScreen.player.getProperty(Properties.CON), sidePosX, 160);
+		getFont().draw(getBatch(), "Weapon: " + GameScreen.player.getProperty(Properties.WEAPON).getType().getName(), sidePosX, 180);
 		getBatch().end();
 	}
 }

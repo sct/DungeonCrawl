@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
-import com.sctgaming.dungeoncrawl.core.entity.LivingEntity;
+import com.sctgaming.dungeoncrawl.core.entity.Item;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Door;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Room;
 import com.sctgaming.dungeoncrawl.core.tiles.map.Void;
@@ -28,6 +28,7 @@ public class TileMap implements Tickable, ILosBoard {
 	private List<List<Tile>> tiles = new ArrayList<List<Tile>>();
 	private List<Room> rooms = new ArrayList<Room>();
 	private List<Door> doors = new ArrayList<Door>();
+	private List<Item> items = new ArrayList<Item>();
 	
 	public TileMap(int w, int h) {
 		MAP_WIDTH = w;
@@ -41,7 +42,7 @@ public class TileMap implements Tickable, ILosBoard {
 		 * Move the camera to the center of the map
 		 */
 		Vector3 pos = new Vector3();
-		pos.set(((MAP_WIDTH*16)+180)/2-camera.viewportWidth/2,MAP_HEIGHT*16/2-camera.viewportHeight/2,0);
+		pos.set(MAP_WIDTH*16/2-camera.viewportWidth/2,MAP_HEIGHT*16/2-camera.viewportHeight/2,0);
 		camera.translate(pos.x,pos.y);
 		
 		camera.update();
@@ -91,6 +92,14 @@ public class TileMap implements Tickable, ILosBoard {
 	
 	public List<Entity> getEntities() {
 		return entities;
+	}
+	
+	public void addItem(Item item) {
+		items.add(item);
+	}
+	
+	public List<Item> getItems() {
+		return items;
 	}
 	
 	/**
@@ -145,9 +154,10 @@ public class TileMap implements Tickable, ILosBoard {
 		
 		for (Entity entity : this.getEntities()) {
 			entity.render(dt);
-			/*if (entity instanceof LivingEntity) {
-				((LivingEntity) entity).renderHealth();
-			}*/
+		}
+		
+		for (Item item : this.getItems()) {
+			item.render(dt);
 		}
 	}
 

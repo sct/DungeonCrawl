@@ -14,7 +14,7 @@ public class Rat extends LivingType {
 	
 	@Override
 	public void create(Entity entity) {
-		entity.setProperty(Properties.EXP_REWARD, 35);
+		entity.setProperty(Properties.EXP_REWARD, 10);
 		entity.setProperty(Properties.CON, 1);
 		super.create(entity);
 	}

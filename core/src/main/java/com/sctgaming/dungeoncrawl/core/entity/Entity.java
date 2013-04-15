@@ -16,6 +16,8 @@ import com.sctgaming.dungeoncrawl.core.ui.components.TurnLog;
 import com.sctgaming.dungeoncrawl.core.utils.Directions;
 
 public abstract class Entity extends PropertyHolder implements Tickable {
+	private static final long serialVersionUID = 2106029678968555741L;
+	
 	private int x;
 	private int y;
 	private EntityType type;
@@ -176,7 +178,7 @@ public abstract class Entity extends PropertyHolder implements Tickable {
 	
 	public void die() {
 		if (!(this instanceof Player)) {
-			TurnLog.addEntry(this.toString() + " has died", Color.RED);
+			TurnLog.addEntry(this.toString() + " has died [EXP: " + this.getProperty(Properties.EXP_REWARD) + "]", Color.RED);
 			GameScreen.player.getType().addXP(GameScreen.player,this.getProperty(Properties.EXP_REWARD));
 			getMap().removeEntity(this);
 		} else {

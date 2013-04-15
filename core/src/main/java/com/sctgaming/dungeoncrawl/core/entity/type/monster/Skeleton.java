@@ -14,7 +14,7 @@ public class Skeleton extends LivingType {
 	
 	@Override
 	public void create(Entity entity) {
-		entity.setProperty(Properties.EXP_REWARD, 50);
+		entity.setProperty(Properties.EXP_REWARD, 20);
 		entity.setProperty(Properties.CON, 2);
 		super.create(entity);
 	}

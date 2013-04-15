@@ -9,6 +9,7 @@ import com.sctgaming.dungeoncrawl.core.utils.PlayerTextures;
 import com.sctgaming.dungeoncrawl.core.utils.Textures;
 
 public class Player extends LivingEntity {
+	private static final long serialVersionUID = 6079509310535264443L;
 
 	public Player(EntityType type, TileMap map, int x, int y) {
 		super(type, map, x, y);

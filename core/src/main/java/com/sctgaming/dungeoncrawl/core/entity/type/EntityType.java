@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
 import com.sctgaming.dungeoncrawl.core.entity.Properties;
+import com.sctgaming.dungeoncrawl.core.entity.Property;
 import com.sctgaming.dungeoncrawl.core.ui.components.TurnLog;
 import com.sctgaming.dungeoncrawl.core.utils.EntityTextures;
 import com.sctgaming.dungeoncrawl.core.utils.Formulas;
@@ -61,9 +62,10 @@ public abstract class EntityType {
 		Random rand = new Random();
 		
 		int calcDamage = (rand.nextInt(damageMax - damageMin + 1) + damageMin);
-		float dodgeChance = Formulas.getDodgeChance(target.getProperty(Properties.AGI), target.getProperty(Properties.LEVEL));
+		float dodgeChance = Formulas.getDodgeChance(target.getProperty(Properties.AGI) + target.getType().getBonusStat(target, Properties.AGI), target.getProperty(Properties.LEVEL));
+		float difference = (target.getProperty(Properties.LEVEL) - entity.getProperty(Properties.LEVEL))/100f;
 		
-		if (rand.nextFloat() > dodgeChance) {
+		if (rand.nextFloat() > (dodgeChance + difference)) {
 			target.takeDamage(calcDamage);
 			TurnLog.addEntry(entity.toString() + " attacks " + target.toString() + " for " + calcDamage + " damage");
 			System.out.println("[Combat] " + entity.toString() + " attacks " + target.toString() + " for " + calcDamage + " damage");
@@ -72,6 +74,19 @@ public abstract class EntityType {
 			System.out.println("[Combat] " + entity.toString() + " MISSES attack on " + target.toString());
 		}
 		
+	}
+	
+	public int getBonusStat(Entity entity, Property<Integer> key) {
+		int stat = getBonusStatFromWeapons(entity, key);
+		return stat;
+	}
+	
+	public int getBonusStatFromWeapons(Entity entity, Property<Integer> key) {
+		if (entity.getProperty(Properties.WEAPON) != null) {
+			return entity.getProperty(Properties.WEAPON).getProperty(key);
+		} else {
+			return 0;
+		}
 	}
 	
 }

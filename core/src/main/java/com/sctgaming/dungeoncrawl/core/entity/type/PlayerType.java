@@ -23,7 +23,7 @@ public class PlayerType extends LivingType implements Inventory {
 	@Override
 	public void create(Entity entity) {
 		entity.setProperty(Properties.CON, 8);
-		entity.setProperty(Properties.WEAPON, new Weapon(Weapons.SHORT_SWORD));
+		entity.setProperty(Properties.WEAPON, new Weapon(Weapons.SHORT_SWORD, 1));
 		super.create(entity);
 	}
 	

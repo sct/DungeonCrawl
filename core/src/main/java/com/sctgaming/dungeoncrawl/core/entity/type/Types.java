@@ -28,6 +28,22 @@ public class Types {
 		}
 	}
 	
+	public static void initializeWeapons() {
+		Field[] fields = Weapons.class.getFields();
+		for (Field f : fields) {
+			if (Modifier.isStatic(f.getModifiers())) {
+				try {
+					Object value = f.get(null);
+					if (value instanceof WeaponType) {
+						registerWeapon((WeaponType) value);
+					}
+				} catch (IllegalArgumentException e) {
+				} catch (IllegalAccessException e) {
+				}
+			}
+		}
+	}
+	
 	public static void registerWeapon(WeaponType weapon) {
 		WEAPON_TYPES.add(weapon);
 	}

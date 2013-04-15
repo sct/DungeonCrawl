@@ -14,7 +14,7 @@ public class Wraith extends LivingType {
 	
 	@Override
 	public void create(Entity entity) {
-		entity.setProperty(Properties.EXP_REWARD, 35);
+		entity.setProperty(Properties.EXP_REWARD, 15);
 		entity.setProperty(Properties.CON, 2);
 		super.create(entity);
 	}

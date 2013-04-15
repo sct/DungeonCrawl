@@ -1,7 +1,6 @@
 package com.sctgaming.dungeoncrawl.core.entity;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.entity.type.EntityType;
@@ -10,6 +9,7 @@ import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
 import com.sctgaming.dungeoncrawl.core.utils.Formulas;
 
 public class LivingEntity extends Entity {
+	private static final long serialVersionUID = 6157659878457985954L;
 
 	public LivingEntity(EntityType type, TileMap map, int x, int y) {
 		super(type, map, x, y);
