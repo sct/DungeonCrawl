@@ -9,10 +9,10 @@ import com.sctgaming.dungeoncrawl.core.utils.TileTextures;
 public class Void extends Tile {
 	private int cost = 5;
 
-	public Void(TileMap map, int x, int y) {
+	public Void(TileMap map, int x, int y, long noise) {
 		super(map, x, y, true);
 		setTexture(TileTextures.VOID);
-		Random rand = new Random();
+		Random rand = new Random(noise);
 		
 		int randPercent = rand.nextInt(100);
 		

@@ -32,13 +32,14 @@ public class TileMapGenerator {
 	public static int DUNGEON_HEIGHT = 100;
 	public static TileMap currentMap;
 	public static Room lastRoom = null;
-	public static Random rand = new Random();
+	public static Random rand;
 	private static List<Point> unscannedTiles = new ArrayList<Point>();
 	private static List<Point> scannedTiles = new ArrayList<Point>();
 	
-	public static TileMap generateDungeon() {
+	public static TileMap generateDungeon(long seed) {
+        rand = new Random(seed);
 		
-		currentMap = new TileMap(DUNGEON_WIDTH, DUNGEON_HEIGHT);
+		currentMap = new TileMap(seed, DUNGEON_WIDTH, DUNGEON_HEIGHT);
 		
 		/*
 		 * We know the width and height of the dungeon, so we can place the first room

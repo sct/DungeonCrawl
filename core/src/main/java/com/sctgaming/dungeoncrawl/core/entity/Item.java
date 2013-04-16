@@ -1,5 +1,6 @@
 package com.sctgaming.dungeoncrawl.core.entity;
 
+import com.badlogic.gdx.graphics.Color;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
 import com.sctgaming.dungeoncrawl.core.entity.type.ItemType;
@@ -15,6 +16,8 @@ public class Item extends PropertyHolder implements Tickable {
 	private ItemType type;
 	private Tile tile;
 	private boolean dropped = false;
+    private boolean visible = false;
+    private int turn = 0;
 	
 	public Item(ItemType type) {
 		this.type = type;
@@ -37,6 +40,14 @@ public class Item extends PropertyHolder implements Tickable {
 	public boolean isDropped() {
 		return dropped;
 	}
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 	
 	public void setTile(Tile tile) {
 		this.tile = tile;
@@ -45,6 +56,14 @@ public class Item extends PropertyHolder implements Tickable {
 	public Tile getTile() {
 		return tile;
 	}
+
+    public void setTurn(int turn) {
+        this.turn = turn;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
 
     public static ItemType getRandomType() {
         Random rand = new Random();
@@ -66,15 +85,25 @@ public class Item extends PropertyHolder implements Tickable {
 	@Override
 	public void render(float dt) {
 		if (isDropped() && tile != null) {
+            Color clr = Color.WHITE.cpy();
+            if (!isVisible()) {
+                clr.r *= 0.3f;
+                clr.g *= 0.3f;
+                clr.b *= 0.3f;
+            }
+            GameScreen.BATCH.setColor(clr);
 			GameScreen.BATCH.draw(getType().getTexture(), tile.getX() * 16, tile.getY() * 16 + 16, 16, -16);
+            GameScreen.BATCH.setColor(1,1,1,1);
 		}
 		
 	}
 
 	@Override
 	public void turn() {
-		// TODO Auto-generated method stub
-		
+        /* Set visible to false at the start of turn to make sure items out of sight are hidden */
+		if (isVisible() && getTurn() != GameScreen.getTurn()) {
+            setVisible(false);
+        }
 	}
 
 	@Override

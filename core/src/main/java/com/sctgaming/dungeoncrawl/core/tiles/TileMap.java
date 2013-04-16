@@ -23,6 +23,7 @@ public class TileMap implements Tickable, ILosBoard {
 	public static final float ACTUALSCALE = 1 / 32f;
 	public int MAP_WIDTH;
 	public int MAP_HEIGHT;
+    public long MAP_SEED;
 	private OrthographicCamera camera;
 	private List<Entity> entities = new ArrayList<Entity>();
 	private List<List<Tile>> tiles = new ArrayList<List<Tile>>();
@@ -30,7 +31,8 @@ public class TileMap implements Tickable, ILosBoard {
 	private List<Door> doors = new ArrayList<Door>();
 	private List<Item> items = new ArrayList<Item>();
 	
-	public TileMap(int w, int h) {
+	public TileMap(long seed, int w, int h) {
+        MAP_SEED = seed;
 		MAP_WIDTH = w;
 		MAP_HEIGHT = h;
 		populateColumns(w,h);
@@ -113,7 +115,7 @@ public class TileMap implements Tickable, ILosBoard {
 		for (int x=0; x<columns; x++) {
 			tiles.add(x, new ArrayList<Tile>(rows));
 			for (int y=0; y < rows; y++) {
-				tiles.get(x).add(y, new Void(this, x, y));
+				tiles.get(x).add(y, new Void(this, x, y, MAP_SEED));
 			}
 		}
 	}
@@ -139,6 +141,10 @@ public class TileMap implements Tickable, ILosBoard {
 		for (Entity entity : this.getEntities()) {
 			entity.turn();
 		}
+
+        for (Item item : getItems()) {
+            item.turn();
+        }
 	}
 
 	@Override
@@ -203,6 +209,13 @@ public class TileMap implements Tickable, ILosBoard {
 				}
 			}
 		}
+
+        for (Item item : getItems()) {
+            if (item.getTile().equals(getTile(x,y))) {
+                item.setVisible(true);
+                item.setTurn(GameScreen.getTurn());
+            }
+        }
 		
 	}
 

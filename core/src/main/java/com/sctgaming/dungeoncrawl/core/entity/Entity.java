@@ -31,6 +31,7 @@ public abstract class Entity extends PropertyHolder implements Tickable {
 	public boolean flip = false;
 	private boolean visible = false;
 	private int turn = 0;
+    private boolean dead = false;
 	
 	
 	public Entity(EntityType type, TileMap map, int x, int y) {
@@ -82,6 +83,14 @@ public abstract class Entity extends PropertyHolder implements Tickable {
 	public boolean isMoving() {
 		return moving;
 	}
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
 	
 	public void setMoving(boolean moving) {
 		this.moving = moving;
@@ -181,6 +190,7 @@ public abstract class Entity extends PropertyHolder implements Tickable {
 			TurnLog.addEntry(this.toString() + " has died [EXP: " + this.getProperty(Properties.EXP_REWARD) + "]", Color.RED);
 			GameScreen.player.getType().addXP(GameScreen.player,this.getProperty(Properties.EXP_REWARD));
 			getMap().removeEntity(this);
+            this.setDead(true);
 		} else {
 			System.out.println("[Combat] The player is dead, but we can't really do anything about it yet.");
 		}

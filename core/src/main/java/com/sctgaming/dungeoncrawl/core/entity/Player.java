@@ -3,6 +3,7 @@ package com.sctgaming.dungeoncrawl.core.entity;
 import com.badlogic.gdx.graphics.Color;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.entity.type.EntityType;
+import com.sctgaming.dungeoncrawl.core.entity.type.PlayerType;
 import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
 import com.sctgaming.dungeoncrawl.core.ui.components.TurnLog;
@@ -47,12 +48,24 @@ public class Player extends LivingEntity {
 		}
 		GameScreen.incrementTurn();
 	}
+
+    public void pickUp() {
+        List<Item> items = getTile().getItems();
+
+        for (Item item : items) {
+            ((PlayerType) getType()).addItem(item);
+            item.setVisible(false);
+            item.setDropped(false);
+            TurnLog.addEntry("You picked up a " + item.getType().getName());
+        }
+    }
 	
 	@Override
 	public void move(Directions direction) {
+        Tile oldTile = this.getTile();
 		super.move(direction);
         List<Item> items = getTile().getItems();
-        if (!items.isEmpty()) {
+        if (!items.isEmpty() && !oldTile.equals(this.getTile())) {
             if (items.size() == 1) {
                 TurnLog.addEntry("There is a " + items.get(0).getType().getName() + " here. Press X to pick it up.", Color.CYAN);
             } else {
@@ -63,6 +76,7 @@ public class Player extends LivingEntity {
                         droppedItems += ", ";
                     }
                     droppedItems += item.getType().getName();
+                    x++;
                 }
                 TurnLog.addEntry("There are several items here [" + droppedItems + "]. Press X to pick up items.", Color.CYAN);
             }

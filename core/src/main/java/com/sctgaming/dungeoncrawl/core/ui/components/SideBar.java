@@ -32,6 +32,7 @@ public class SideBar extends Component {
 		getFont().setColor(1,1,1,1);
 
         getFont().draw(getBatch(), "THIS IS NOT A MINECRAFT MOD", 10, 10);
+        getFont().draw(getBatch(), "Map Seed: " + GameScreen.map.MAP_SEED, 10, 30);
 
 		getBatch().end();
 	}

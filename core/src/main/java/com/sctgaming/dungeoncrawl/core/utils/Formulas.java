@@ -5,9 +5,9 @@ import java.util.Random;
 public class Formulas {
 	
 	/**
-	 * Returns quadratic health amount based on provided level
+	 * Returns quadratic health amount based on provided constitution
 	 * 
-	 * @param level
+	 * @param con
 	 * @return int Health value
 	 */
 	public static int getHealth(int con) {
@@ -34,7 +34,13 @@ public class Formulas {
 	public static float getDodgeChance(int agi, int level) {
 		return (float) (1 - (0.7 *(1 - (agi * 0.2)/100)));
 	}
-	
+
+    /**
+     * Returns a random stat value based on the provided level
+     *
+     * @param level
+     * @return
+     */
 	public static int getRandomStat(int level) {
 		Random rand = new Random();
 		

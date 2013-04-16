@@ -8,6 +8,7 @@ import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.entity.type.EntityType;
 import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
+import com.sctgaming.dungeoncrawl.core.ui.components.TurnLog;
 import com.sctgaming.dungeoncrawl.core.utils.Formulas;
 
 public class LivingEntity extends Entity {
@@ -23,7 +24,7 @@ public class LivingEntity extends Entity {
 		if (tile != null) {
 			Entity ent = tile.getEntity();
 		
-			if (ent != null && (ent.equals(GameScreen.player) || this instanceof Player)) {
+			if (ent != null && !ent.isDead() && (ent.equals(GameScreen.player) || this instanceof Player)) {
 				getType().attack(this, ent);
 				return false;
 			}
@@ -47,10 +48,9 @@ public class LivingEntity extends Entity {
         Item item = new Item(this.getProperty(Properties.LEVEL));
         item.setTile(this.getTile());
         item.setDropped(true);
-        System.out.println("Item should drop by mob @ " + item.getTile().getX() + "," + item.getTile().getY());
-        System.out.println("Item: " + item.getType().getName());
         this.getMap().addItem(item);
 		super.die();
+        TurnLog.addEntry(this.getType().getName() + " dropped a " + item.getType().getName(), Color.CYAN);
 	}
 	
 	public void renderHealth() {

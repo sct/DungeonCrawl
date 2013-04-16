@@ -1,7 +1,8 @@
 package com.sctgaming.dungeoncrawl.core.utils;
 
 public enum WeaponTextures {
-	SHORT_SWORD (0,0);
+	SHORT_SWORD (0,0),
+    HAND_AXE (1,0);
 	
 	private int x;
 	private int y;
@@ -12,10 +13,10 @@ public enum WeaponTextures {
 	}
 	
 	public int getX() {
-		return x;
+		return x * 16;
 	}
 	
 	public int getY() {
-		return y;
+		return y * 16;
 	}
 }

@@ -19,6 +19,8 @@ import com.sctgaming.dungeoncrawl.core.tiles.TileMapSpawner;
 import com.sctgaming.dungeoncrawl.core.ui.GameOverlay;
 import com.sctgaming.dungeoncrawl.core.utils.Directions;
 
+import java.util.Random;
+
 public class GameScreen implements Screen, InputProcessor {
 	public static TileMap map;
 	public static Player player;
@@ -34,8 +36,11 @@ public class GameScreen implements Screen, InputProcessor {
 		BATCH = new SpriteBatch();
 		SHAPE = new ShapeRenderer();
 		overlay = new GameOverlay();
-		
-		setMap(TileMapGenerator.generateDungeon());
+
+        /* Temporary Random seed generator */
+        Random rand = new Random();
+
+		setMap(TileMapGenerator.generateDungeon(rand.nextLong()));
 		setPlayer(new Player(new PlayerType(),map,50,50));
 		Types.initializeMonsters();
 		Types.initializeItems();
@@ -144,6 +149,9 @@ public class GameScreen implements Screen, InputProcessor {
 			case Keys.SPACE:
 				player.action();
 				break;
+            case Keys.X:
+                player.pickUp();
+                break;
 		}
 		
 		return false;
