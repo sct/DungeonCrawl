@@ -38,6 +38,8 @@ public class GameScreen implements Screen, InputProcessor {
 		setMap(TileMapGenerator.generateDungeon());
 		setPlayer(new Player(new PlayerType(),map,50,50));
 		Types.initializeMonsters();
+		Types.initializeItems();
+		Types.initializeWeapons();
 		TileMapSpawner.spawnMonsters(map);
 	}
 

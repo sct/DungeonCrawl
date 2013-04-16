@@ -5,7 +5,6 @@ import java.util.Random;
 import com.sctgaming.dungeoncrawl.core.entity.type.ItemType;
 import com.sctgaming.dungeoncrawl.core.entity.type.Types;
 import com.sctgaming.dungeoncrawl.core.entity.type.WeaponType;
-import com.sctgaming.dungeoncrawl.core.utils.Formulas;
 
 public class Weapon extends Item {
 	private static final long serialVersionUID = -8407267261022083492L;
@@ -17,21 +16,15 @@ public class Weapon extends Item {
 	}
 	
 	public Weapon(int level) {
-		super(getRandomType());
+		super(getRandomWeaponType());
 		getType().create();
 		randomizeStats(level);
 	}
 	
-	public static WeaponType getRandomType() {
+	public static WeaponType getRandomWeaponType() {
 		Random rand = new Random();
 		
 		return Types.WEAPON_TYPES.get(rand.nextInt(Types.WEAPON_TYPES.size()));
-	}
-	
-	public void randomizeStats(int level) {
-		setProperty(Properties.STR, Formulas.getRandomStat(level));
-		setProperty(Properties.AGI, Formulas.getRandomStat(level));
-		setProperty(Properties.CON, Formulas.getRandomStat(level));
 	}
 	
 

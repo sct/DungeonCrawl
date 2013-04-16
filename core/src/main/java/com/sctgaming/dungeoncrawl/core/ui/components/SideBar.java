@@ -1,5 +1,6 @@
 package com.sctgaming.dungeoncrawl.core.ui.components;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.entity.Properties;
@@ -17,8 +18,9 @@ public class SideBar extends Component {
 		
 		getBatch().draw(sbg,getCamera().viewportWidth-sbg.getRegionWidth(),0);
 		
-		float sidePosX = getCamera().viewportWidth - 215 + 20;
-		getFont().draw(getBatch(), "Dungeon Crawler v0.1", sidePosX, 20);
+		float sidePosX = getCamera().viewportWidth - 215 + 15;
+		getFont().setColor(Color.BLACK);
+		getFont().draw(getBatch(), "Dungeon Crawler v0.1", sidePosX, 10);
 		getFont().draw(getBatch(), "Turn: " + GameScreen.getTurn(), sidePosX, 40);
 		getFont().draw(getBatch(), "Level: " + GameScreen.player.getProperty(Properties.LEVEL), sidePosX, 60);
 		getFont().draw(getBatch(), "Health: " + GameScreen.player.getProperty(Properties.HEALTH) + "/" + Formulas.getHealth(GameScreen.player.getProperty(Properties.CON)), sidePosX, 80);
@@ -27,6 +29,10 @@ public class SideBar extends Component {
 		getFont().draw(getBatch(), "AGI: " + GameScreen.player.getProperty(Properties.AGI) + " + " + GameScreen.player.getType().getBonusStat(GameScreen.player, Properties.AGI), sidePosX, 140);
 		getFont().draw(getBatch(), "CON: " + GameScreen.player.getProperty(Properties.CON), sidePosX, 160);
 		getFont().draw(getBatch(), "Weapon: " + GameScreen.player.getProperty(Properties.WEAPON).getType().getName(), sidePosX, 180);
+		getFont().setColor(1,1,1,1);
+
+        getFont().draw(getBatch(), "THIS IS NOT A MINECRAFT MOD", 10, 10);
+
 		getBatch().end();
 	}
 }

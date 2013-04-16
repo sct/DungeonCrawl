@@ -10,5 +10,5 @@ public class Textures {
 	public static final Texture ITEMS = new Texture("items.png");
 	public static final Texture WEAPONS = new Texture("weapons.png");
 	
-	public static final Texture INTERFACE = new Texture("statbackground.png");
+	public static final Texture INTERFACE = new Texture("statbackground2.png");
 }

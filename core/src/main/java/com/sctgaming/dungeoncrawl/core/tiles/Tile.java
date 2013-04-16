@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.Tickable;
 import com.sctgaming.dungeoncrawl.core.entity.Entity;
+import com.sctgaming.dungeoncrawl.core.entity.Item;
 import com.sctgaming.dungeoncrawl.core.utils.Directions;
 import com.sctgaming.dungeoncrawl.core.utils.Textures;
 import com.sctgaming.dungeoncrawl.core.utils.TileTextures;
@@ -142,6 +143,16 @@ public abstract class Tile implements Tickable {
 		}
 		return null;
 	}
+
+    public List<Item> getItems() {
+        List<Item> items = new ArrayList<Item>();
+        for (Item item : map.getItems()) {
+            if (this.equals(item.getTile())) {
+                items.add(item);
+            }
+        }
+        return items;
+    }
 	
 	public Tile getRelative(Directions direction) {
 		return getRelative(direction.getX(), direction.getY());

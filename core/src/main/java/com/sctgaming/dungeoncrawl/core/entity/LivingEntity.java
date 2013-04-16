@@ -1,5 +1,7 @@
 package com.sctgaming.dungeoncrawl.core.entity;
 
+import java.util.Random;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
@@ -37,6 +39,18 @@ public class LivingEntity extends Entity {
 	@Override
 	public void run(float time) {
 		animate();
+	}
+	
+	@Override
+	public void die() {
+		Random rand = new Random();
+        Item item = new Item(this.getProperty(Properties.LEVEL));
+        item.setTile(this.getTile());
+        item.setDropped(true);
+        System.out.println("Item should drop by mob @ " + item.getTile().getX() + "," + item.getTile().getY());
+        System.out.println("Item: " + item.getType().getName());
+        this.getMap().addItem(item);
+		super.die();
 	}
 	
 	public void renderHealth() {

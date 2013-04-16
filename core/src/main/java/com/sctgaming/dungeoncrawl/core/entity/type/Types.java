@@ -10,6 +10,7 @@ import com.sctgaming.dungeoncrawl.core.entity.type.monster.Monsters;
 public class Types {
 	
 	public static List<EntityType> MONSTER_TYPES = new ArrayList<EntityType>();
+	public static List<ItemType> ITEM_TYPES = new ArrayList<ItemType>();
 	public static List<WeaponType> WEAPON_TYPES = new ArrayList<WeaponType>();
 	
 	public static void initializeMonsters() {
@@ -28,7 +29,7 @@ public class Types {
 		}
 	}
 	
-	public static void initializeWeapons() {
+	public static void initializeItems() {
 		Field[] fields = Weapons.class.getFields();
 		for (Field f : fields) {
 			if (Modifier.isStatic(f.getModifiers())) {
@@ -42,6 +43,26 @@ public class Types {
 				}
 			}
 		}
+	}
+	
+	public static void initializeWeapons() {
+		Field[] fields = Weapons.class.getFields();
+		for (Field f : fields) {
+			if (Modifier.isStatic(f.getModifiers())) {
+				try {
+					Object value = f.get(null);
+					if (value instanceof ItemType) {
+						registerItem((ItemType) value);
+					}
+				} catch (IllegalArgumentException e) {
+				} catch (IllegalAccessException e) {
+				}
+			}
+		}
+	}
+	
+	public static void registerItem(ItemType item) {
+		ITEM_TYPES.add(item);
 	}
 	
 	public static void registerWeapon(WeaponType weapon) {
