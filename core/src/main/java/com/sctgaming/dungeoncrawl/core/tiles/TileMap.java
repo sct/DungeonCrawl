@@ -99,6 +99,10 @@ public class TileMap implements Tickable, ILosBoard {
 	public void addItem(Item item) {
 		items.add(item);
 	}
+
+    public void removeItem(Item item) {
+        items.remove(item);
+    }
 	
 	public List<Item> getItems() {
 		return items;

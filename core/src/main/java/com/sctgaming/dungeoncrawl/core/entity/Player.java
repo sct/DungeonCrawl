@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.sctgaming.dungeoncrawl.core.GameScreen;
 import com.sctgaming.dungeoncrawl.core.entity.type.EntityType;
 import com.sctgaming.dungeoncrawl.core.entity.type.PlayerType;
+import com.sctgaming.dungeoncrawl.core.player.Inventory;
 import com.sctgaming.dungeoncrawl.core.tiles.Tile;
 import com.sctgaming.dungeoncrawl.core.tiles.TileMap;
 import com.sctgaming.dungeoncrawl.core.ui.components.TurnLog;
@@ -11,10 +12,13 @@ import com.sctgaming.dungeoncrawl.core.utils.Directions;
 import com.sctgaming.dungeoncrawl.core.utils.PlayerTextures;
 import com.sctgaming.dungeoncrawl.core.utils.Textures;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Player extends LivingEntity {
+public class Player extends LivingEntity implements Inventory {
 	private static final long serialVersionUID = 6079509310535264443L;
+
+    private List<Item> items = new ArrayList<Item>();
 
 	public Player(EntityType type, TileMap map, int x, int y) {
 		super(type, map, x, y);
@@ -53,7 +57,7 @@ public class Player extends LivingEntity {
         List<Item> items = getTile().getItems();
 
         for (Item item : items) {
-            ((PlayerType) getType()).addItem(item);
+            this.addItem(item);
             item.setVisible(false);
             item.setDropped(false);
             TurnLog.addEntry("You picked up a " + item.getType().getName());
@@ -103,4 +107,18 @@ public class Player extends LivingEntity {
 		super.update(dt);
 	}
 
+    @Override
+    public List<Item> getInventory() {
+        return items;
+    }
+
+    @Override
+    public void addItem(Item item) {
+        items.add(item);
+    }
+
+    @Override
+    public void removeItem(Item item) {
+        items.remove(item);
+    }
 }

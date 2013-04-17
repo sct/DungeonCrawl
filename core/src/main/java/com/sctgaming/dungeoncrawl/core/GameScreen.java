@@ -35,7 +35,6 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.input.setInputProcessor(this);
 		BATCH = new SpriteBatch();
 		SHAPE = new ShapeRenderer();
-		overlay = new GameOverlay();
 
         /* Temporary Random seed generator */
         Random rand = new Random();
@@ -46,6 +45,8 @@ public class GameScreen implements Screen, InputProcessor {
 		Types.initializeItems();
 		Types.initializeWeapons();
 		TileMapSpawner.spawnMonsters(map);
+
+        overlay = new GameOverlay();
 	}
 
 	@Override
@@ -151,6 +152,9 @@ public class GameScreen implements Screen, InputProcessor {
 				break;
             case Keys.X:
                 player.pickUp();
+                break;
+            case Keys.I:
+                GameOverlay.inventoryHolder.setVisible();
                 break;
 		}
 		

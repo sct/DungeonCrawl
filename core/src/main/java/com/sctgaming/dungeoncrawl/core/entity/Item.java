@@ -34,6 +34,10 @@ public class Item extends PropertyHolder implements Tickable {
 	}
 	
 	public void setDropped(boolean dropped) {
+        if (!dropped) {
+            this.tile = null;
+            GameScreen.map.removeItem(this);
+        }
 		this.dropped = dropped;
 	}
 	

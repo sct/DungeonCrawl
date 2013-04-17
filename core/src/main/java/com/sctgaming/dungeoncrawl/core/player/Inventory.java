@@ -5,8 +5,8 @@ import java.util.List;
 import com.sctgaming.dungeoncrawl.core.entity.Item;
 
 /**
- * Basic inventory interface. Required methods for any object that
- * will hold an inventory of items.
+ * Basic inventoryHolder interface. Required methods for any object that
+ * will hold an inventoryHolder of items.
  * 
  * @author sct
  *

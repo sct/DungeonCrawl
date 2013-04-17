@@ -12,9 +12,7 @@ import com.sctgaming.dungeoncrawl.core.player.Inventory;
 import com.sctgaming.dungeoncrawl.core.ui.components.TurnLog;
 import com.sctgaming.dungeoncrawl.core.utils.Formulas;
 
-public class PlayerType extends LivingType implements Inventory {
-	
-	private List<Item> items = new ArrayList<Item>();
+public class PlayerType extends LivingType {
 
 	public PlayerType() {
 		super("Player",false);
@@ -56,21 +54,6 @@ public class PlayerType extends LivingType implements Inventory {
 		
 		TurnLog.addEntry("Congratulations! You have leveled up. You are now level " + ent.getProperty(Properties.LEVEL),Color.YELLOW);
 		System.out.println("[Event] Player has leveled up! Player is now level " + ent.getProperty(Properties.LEVEL));
-	}
-
-	@Override
-	public List<Item> getInventory() {
-		return items;
-	}
-
-	@Override
-	public void addItem(Item item) {
-		items.add(item);
-	}
-
-	@Override
-	public void removeItem(Item item) {
-		items.remove(item);
 	}
 
 }
