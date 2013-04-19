@@ -66,9 +66,9 @@
 			<version>${gdx.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>rlforj</groupId>
-		    <artifactId>rlforj</artifactId>
-		    <version>0.2</version>
+			<groupId>net.sourceforge</groupId>
+			<artifactId>rlforj</artifactId>
+			<version>0.2</version>
 		</dependency>
 	</dependencies>
 	

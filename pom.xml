@@ -20,6 +20,10 @@
 			<id>gdx-nightlies</id>
 			<url>http://libgdx.badlogicgames.com/nightlies/maven</url>
 		</repository>
+		<repository>
+			<id>pevnostgames</id>
+			<url>http://repo.pevnostgames.net/</url>
+		</repository>
 	</repositories>
 
 	<build>
